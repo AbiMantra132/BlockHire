@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "BlockHire_backend": {
+      "main": "src/BlockHire_backend/main.mo",
+      "type": "motoko"
+    },
+    "BlockHire_frontend": {
+      "dependencies": [
+        "BlockHire_backend"
+      ],
+      "source": [
+        "src/BlockHire_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "BlockHire_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
