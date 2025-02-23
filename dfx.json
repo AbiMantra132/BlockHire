@@ -16,20 +16,27 @@
       "type": "motoko"
     },
     "BlockHire_frontend": {
-      "dependencies": [
-        "BlockHire_backend"
-      ],
-      "source": [
-        "src/BlockHire_frontend/dist"
-      ],
+      "dependencies": ["BlockHire_backend"],
+      "source": ["src/BlockHire_frontend/dist"],
       "type": "assets",
       "workspace": "BlockHire_frontend"
+    },
+    "internet_identity": {
+      "type": "custom",
+      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
+      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz",
+      "remote": {
+        "id": {
+          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+        }
+      },
+      "frontend": {}
     }
   },
   "defaults": {
     "build": {
       "args": "",
-      "packtool": ""
+      "packtool": "mops sources"
     }
   },
   "output_env_file": ".env",
