@@ -8,13 +8,26 @@ import UserService "services/UserService";
 
 // TYPES
 import UserTypes "types/UserTypes";
+import CompanyTypes "types/CompanyTypes";
+import FreeLancerTypes "types/FreeLancerTypes";
 
 actor class BlockHire() = this {
   // DATA
-   private var users : UserTypes.Users = HashMap.HashMap<Principal, UserTypes.User>(
+  private var users : UserTypes.Users = HashMap.HashMap<Principal, UserTypes.User>(
     10,
     Principal.equal,
     Principal.hash,
+  );
+  
+  private var company : CompanyTypes.Companies = HashMap.HashMap<Principal, CompanyTypes.Company>(
+    10,
+    Principal.equal,
+    Principal.hash
+  );
+  private var freelancers : FreeLancerTypes.FreeLancers = HashMap.HashMap<Principal, FreeLancerTypes.FreeLancer>(
+    10,
+    Principal.equal,
+    Principal.hash
   );
 
   // DATA ENTRIES
@@ -23,6 +36,7 @@ actor class BlockHire() = this {
   // PREUPGRADE & POSTUPGRADE FUNC TO KEEP DATA
   system func preupgrade() {
     usersEntries := Iter.toArray(users.entries());
+     
   };
 
   system func postupgrade() {
