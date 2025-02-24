@@ -11,6 +11,7 @@ module{
     username : Text;
     walletAddress : Text;
     profile: Text;
+    role: Text;
   }; 
 };
 
