@@ -3,7 +3,7 @@ import Result "mo:base/Result";
 import Principal "mo:base/Principal";
 
 // TYPES
-import Types "../types/Types";
+import UserTypes "../types/UserTypes";
 
 // CONSTANTS
 import GlobalConstants "../constants/constants";
@@ -11,10 +11,10 @@ import GlobalConstants "../constants/constants";
 
 module{
     public func createUser(
-        users : Types.Users,
+        users : UserTypes.Users,
         userId : Principal,
         walletAddress : Text,
-    ) : async Result.Result<Types.User, Text> {
+    ) : async Result.Result<UserTypes.User, Text> {
         // CEK USER PRINCIPAL
         if (Principal.isAnonymous(userId)) {
             return #err "Anonymous principals are not allowed";
@@ -33,7 +33,7 @@ module{
             };
             case null {
                 // CREATE NEW IF NO
-                let newUser : Types.User = {
+                let newUser : UserTypes.User = {
                     id = userId;
                     username = "User";
                     walletAddress = walletAddress;
