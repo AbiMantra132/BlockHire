@@ -7,18 +7,18 @@ import Result "mo:base/Result";
 import UserService "services/UserService";
 
 // TYPES
-import Types "types/Types";
+import UserTypes "types/UserTypes";
 
 actor class BlockHire() = this {
   // DATA
-   private var users : Types.Users = HashMap.HashMap<Principal, Types.User>(
+   private var users : UserTypes.Users = HashMap.HashMap<Principal, UserTypes.User>(
     10,
     Principal.equal,
     Principal.hash,
   );
 
   // DATA ENTRIES
-  private stable var usersEntries : [(Principal, Types.User)] = [];
+  private stable var usersEntries : [(Principal, UserTypes.User)] = [];
 
   // PREUPGRADE & POSTUPGRADE FUNC TO KEEP DATA
   system func preupgrade() {
@@ -26,7 +26,7 @@ actor class BlockHire() = this {
   };
 
   system func postupgrade() {
-    users := HashMap.fromIter<Principal, Types.User>(usersEntries.vals(), 0, Principal.equal, Principal.hash);
+    users := HashMap.fromIter<Principal, UserTypes.User>(usersEntries.vals(), 0, Principal.equal, Principal.hash);
     usersEntries := [];
   };
 
@@ -38,7 +38,7 @@ actor class BlockHire() = this {
 
   public shared (msg) func createUser(
     walletAddress : Text
-  ) : async Result.Result<Types.User, Text> {
+  ) : async Result.Result<UserTypes.User, Text> {
     return await UserService.createUser(users, msg.caller, walletAddress);
   };
 };
