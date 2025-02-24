@@ -5,11 +5,14 @@ import Result "mo:base/Result";
 
 // SERVICES
 import UserService "services/UserService";
+import FreelancerService "services/FreelancerService";
+import CompanyService "services/CompanyService";
 
 // TYPES
 import UserTypes "types/UserTypes";
 import FreeLancerTypes "types/FreeLancerTypes";
 import CompanyTypes "types/CompanyTypes";
+import ProjectTypes "types/ProjectTypes";
 
 actor class BlockHire() = this {
   // DATA
@@ -61,4 +64,26 @@ actor class BlockHire() = this {
   ) : async Result.Result<UserTypes.User, Text> {
     return await UserService.createUser(users, msg.caller, walletAddress);
   };
+
+  // FREELANCE
+  public shared func createFreelancer(userId : Principal, fullName : Text, email : Text, username : Text, walletAddress : Text, profile : Text, bio : ?Text, skills : [Text], portofolioLinks : ?[Text], hourlyRate : ?Nat, languages : Text, joindedAt : Text, updatedAt : Text) : async Result.Result<FreeLancerTypes.FreeLancer, Text>{
+    return await FreelancerService.createFreelancer(userId, freelancers, fullName, email, username, walletAddress, profile, bio, skills, portofolioLinks, hourlyRate, languages, joindedAt, updatedAt);
+  };
+
+  // COMPANY
+  public shared func createCompany(
+    userId : Principal, 
+    profile: Text,
+    companyName : Text,
+    walletAddress : Text,
+    email : Text,
+    industry : Text,
+    location : ?Text,
+    websiteUrl : ?Text,
+    description : ?Text, 
+    joinedAt : Text,
+    updatedAt : Text,
+    ) : async Result.Result<CompanyTypes.Company, Text>{
+      return CompanyService.createCompany(userId, companies, profile, companyName, walletAddress, email, industry, location, websiteUrl, description, joinedAt, updatedAt);
+    };
 };

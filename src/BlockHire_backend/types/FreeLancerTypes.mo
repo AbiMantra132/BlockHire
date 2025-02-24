@@ -15,7 +15,7 @@ module {
     walletAddress : Text;
     profile : Text;
     bio : ?Text;
-    skills : Text;
+    skills : [Text];
     portfolioLinks : ?[Text];
     hourlyRate : ?Nat;
     languages : Text;
