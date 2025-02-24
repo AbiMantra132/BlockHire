@@ -8,7 +8,7 @@ module {
 
   // COMPANY TYPE
   public type Company = {
-    id : Text; 
+    id : Principal; 
     profile: Text;
     companyName : Text;
     walletAddress : Text;

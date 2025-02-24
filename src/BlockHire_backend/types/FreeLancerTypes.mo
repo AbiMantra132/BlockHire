@@ -7,7 +7,7 @@ module {
   public type FreeLancers = HashMap.HashMap<Principal, FreeLancer>;
 
   // FREELANCER TYPE
-  type FreeLancer = {
+  public type FreeLancer = {
     id : Principal;
     fullName : Text;
     email : Text;
@@ -15,7 +15,7 @@ module {
     walletAddress : Text;
     profile : Text;
     bio : ?Text;
-    skills : Text;
+    skills : [Text];
     portfolioLinks : ?[Text];
     hourlyRate : ?Nat;
     languages : Text;
