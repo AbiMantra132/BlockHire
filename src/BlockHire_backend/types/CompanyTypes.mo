@@ -9,9 +9,10 @@ module {
   // COMPANY TYPE
   public type Company = {
     id : Text; 
+    profile: Text;
     companyName : Text;
+    walletAddress : Text;
     email : Text;
-    passwordHash : Text;
     industry : Text; // Industry category (e.g., Fintech, Healthtech)
     location : ?Text;
     websiteUrl : ?Text;

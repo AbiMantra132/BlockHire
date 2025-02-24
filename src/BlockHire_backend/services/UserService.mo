@@ -38,6 +38,7 @@ module{
                     username = "User";
                     walletAddress = walletAddress;
                     profile = GlobalConstants.PROFILE_DEFAULT;
+                    role = "Guest";
                 };
 
                 users.put(userId, newUser);
