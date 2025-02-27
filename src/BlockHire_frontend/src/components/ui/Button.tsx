@@ -9,7 +9,7 @@ interface ButtonProps {
 export default function Button({ type, title, onclick }: ButtonProps) {
   return (
     <button
-      className={`w-fit text-base px-5 py-1 rounded-md cursor-pointer 
+      className={`w-fit text-base px-5 py-1 rounded-xl cursor-pointer 
         ${
           type == "default" && "bg-[#2F89FC] text-white border border-[#2F89FC]"
         }

@@ -14,10 +14,9 @@ module {
     username : Text;
     walletAddress : Text;
     profile : Text;
-    bio : ?Text;
+    bio : Text;
     skills : [Text];
-    portfolioLinks : ?[Text];
-    hourlyRate : ?Nat;
+    portfolioLinks : Text;
     languages : Text;
     availabilityStatus : Text;
     joinedAt : Text;
