@@ -176,6 +176,7 @@ actor class BlockHire() = this {
     duration : Text,
     companyId : Principal,
     createdAt : Text,
+    freeLancerNeeded : Nat
   ) : async Result.Result<ProjectTypes.Project, Text> {
     let parsedBudget = switch (Nat.fromText(budget)) {
       case (?num) num;
@@ -198,6 +199,7 @@ actor class BlockHire() = this {
       applicants = null;
       createdAt = createdAt;
       submission = "";
+      freelancerNeeded = freeLancerNeeded;
       freelancerApproved = false;
       companyApproved = false;
     };
@@ -209,7 +211,7 @@ actor class BlockHire() = this {
 
   public shared func getAllProject() : async [ProjectTypes.Project] {
     let data = Iter.toArray(projects.vals());
-    
+
     return data;
   };
 
@@ -306,6 +308,7 @@ actor class BlockHire() = this {
         let updatedProject = {
           project with
           freelancer = ?[freelancerId];
+          freelancerNeeded = if (project.freelancerNeeded > 0) { project.freelancerNeeded - 1 } else { 0 };
         };
 
         ignore projects.replace(projectId, updatedProject);
