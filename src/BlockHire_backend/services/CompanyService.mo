@@ -14,9 +14,9 @@ module{
         walletAddress : Text,
         email : Text,
         industry : Text,
-        location : ?Text,
-        websiteUrl : ?Text,
-        description : ?Text, 
+        location : Text,
+        websiteUrl : Text,
+        description : Text, 
         joinedAt : Text,
         updatedAt : Text,
     ) : Result.Result<CompanyTypes.Company, Text>{

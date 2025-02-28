@@ -59,6 +59,17 @@ actor class BlockHire() = this {
     message.caller;
   };
 
+  public shared func queryUser(userId : Principal) : async Result.Result<UserTypes.User, Text> {
+    switch(users.get(userId)){
+      case(?userExist){
+        return #ok userExist;
+      };
+      case (null){
+        return #err "User not logged";
+      };
+    };
+  };
+
   public shared (msg) func createUser(
     walletAddress : Text
   ) : async Result.Result<UserTypes.User, Text> {
@@ -66,11 +77,55 @@ actor class BlockHire() = this {
   };
 
   // FREELANCE
-  public shared func createFreelancer(userId : Principal, fullName : Text, email : Text, username : Text, walletAddress : Text, profile : Text, bio : ?Text, skills : [Text], portofolioLinks : ?[Text], hourlyRate : ?Nat, languages : Text, joindedAt : Text, updatedAt : Text) : async Result.Result<FreeLancerTypes.FreeLancer, Text>{
-    return await FreelancerService.createFreelancer(userId, freelancers, fullName, email, username, walletAddress, profile, bio, skills, portofolioLinks, hourlyRate, languages, joindedAt, updatedAt);
+  public shared func getFreelancer(userId : Principal) : async Result.Result<FreeLancerTypes.FreeLancer, Text>{
+    let data = freelancers.get(userId);
+    switch(data){
+      case (?isData){
+        return #ok isData;
+      };
+      case (null){
+        return #err "Invalid User ID";
+      }
+    }
+  };
+  public shared func createFreelancer(
+    userId : Principal, 
+    fullName : Text,
+    email : Text,
+    username : Text,
+    walletAddress : Text,
+    profile : Text,
+    bio : Text,
+    skills : [Text],
+    portofolioLinks : Text,
+    languages : Text,
+    joindedAt : Text,
+    updatedAt : Text
+    ) : async Result.Result<FreeLancerTypes.FreeLancer, Text>{
+    let freelancer = await FreelancerService.createFreelancer(userId, freelancers, fullName, email, username, walletAddress, profile, bio, skills, portofolioLinks, languages, joindedAt, updatedAt);
+    let updatedUser : UserTypes.User ={
+      id = userId;
+      profile = profile;
+      role = "Freelancer";
+      username = username;
+      walletAddress = walletAddress;
+    };
+    users.put(userId, updatedUser);
+    return freelancer;
   };
 
   // COMPANY
+  public shared func getCompany(userId : Principal) : async Result.Result<CompanyTypes.Company, Text>{
+    let data = companies.get(userId);
+    switch(data){
+      case (?isData){
+        return #ok isData;
+      };
+      case (null){
+        return #err "Invalid User ID";
+      }
+    }
+  };
   public shared func createCompany(
     userId : Principal, 
     profile: Text,
@@ -78,12 +133,21 @@ actor class BlockHire() = this {
     walletAddress : Text,
     email : Text,
     industry : Text,
-    location : ?Text,
-    websiteUrl : ?Text,
-    description : ?Text, 
+    location : Text,
+    websiteUrl : Text,
+    description : Text, 
     joinedAt : Text,
     updatedAt : Text,
     ) : async Result.Result<CompanyTypes.Company, Text>{
-      return CompanyService.createCompany(userId, companies, profile, companyName, walletAddress, email, industry, location, websiteUrl, description, joinedAt, updatedAt);
+      let company = CompanyService.createCompany(userId, companies, profile, companyName, walletAddress, email, industry, location, websiteUrl, description, joinedAt, updatedAt);
+      let updatedUser : UserTypes.User ={
+      id = userId;
+      profile = profile;
+      role = "Company";
+      username = companyName;
+      walletAddress = walletAddress;
+    };
+    users.put(userId, updatedUser);
+    return company;
     };
 };
