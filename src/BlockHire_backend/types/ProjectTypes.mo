@@ -4,28 +4,34 @@ import Principal "mo:base/Principal";
 
 
 module {
-  public type Projects = HashMap.HashMap<Principal, Project>;
+  public type Projects = HashMap.HashMap<Text, Project>;
+  public type Submissions = HashMap.HashMap<Text, Submission>;
 
   // Type Project
   public type Project = {
-      projectId : Principal;
-      companyId : Principal;
-      title : Text;
-      description : Text;
-      requiredSkills : [Text];
-      budget : Nat; // Total budget for the project
-      deadline : Text;
-      status : Text;
-      applicants : [Principal]; // Freelancer IDs
-      hiredFreelancerId : ?Text; // ID of hired freelancer
-      wallet: ProjectWallet;
-      createdAt : Text;
-      updatedAt : Text;
+    projectId : Text;
+    companyId : Principal;
+    title : Text;
+    description : Text;
+    requiredSkills : [Text];
+    budget : Nat; // Total budget for the project
+    deadline : Text;
+    status : Text;
+    freelancer : ?[Principal]; // Freelancer IDs
+    applicants : ?[Principal]; // Freelancer IDs
+    createdAt : Text;
+    submission : Text ; // URL atau deskripsi submission
+    freelancerApproved : Bool;
+    companyApproved : Bool;
   };
 
-  public type ProjectWallet = {
-    id : Principal;
-    projectId : Principal;
-    balance : Nat;
-  }
+  public type Submission = {
+    submissionId : Text;
+    projectId : Text;
+    freelancerId : Principal;
+    companyId : Principal;
+    status : Text;
+    owner : Principal;
+    submission : Text;
+  };
 }
