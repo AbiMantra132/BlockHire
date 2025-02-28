@@ -177,17 +177,14 @@ actor class BlockHire() = this {
     companyId : Principal,
     createdAt : Text,
   ) : async Result.Result<ProjectTypes.Project, Text> {
-    // Validate and parse budget
     let parsedBudget = switch (Nat.fromText(budget)) {
       case (?num) num;
       case null return #err("Invalid budget format. Please provide a valid number.");
     };
 
-    // Generate project ID
     let currentId = nextProjectId;
     nextProjectId += 1;
 
-    // Create new project with default values
     let newProject : ProjectTypes.Project = {
       projectId = Nat.toText(currentId);
       companyId = companyId;
@@ -205,7 +202,6 @@ actor class BlockHire() = this {
       companyApproved = false;
     };
 
-    // Here you would typically store the project in a stable data structure
     projects.put(Nat.toText(currentId), newProject);
 
     #ok(newProject);
@@ -224,14 +220,30 @@ actor class BlockHire() = this {
   };
 
   public shared func getProjectsByPrincipalCompanyId(principalId : Principal) : async [ProjectTypes.Project] {
-    // Convert the projects to an array
     let allProjects = Iter.toArray(projects.vals());
 
-    // Filter projects based on the principal ID
     let filteredProjects = Array.filter<ProjectTypes.Project>(
       allProjects,
       func(project : ProjectTypes.Project) : Bool {
         return project.companyId == principalId;
+      },
+    );
+
+    return filteredProjects;
+  };
+
+  public shared func getProjectsByFreeLancerIds(principalId : Principal) : async [ProjectTypes.Project] {
+    let allProjects = Iter.toArray(projects.vals());
+
+    let filteredProjects = Array.filter<ProjectTypes.Project>(
+      allProjects,
+      func(project : ProjectTypes.Project) : Bool {
+        switch (project.freelancer) {
+          case (null) { false };
+          case (?freelancers) {
+            Array.find<Principal>(freelancers, func(p) { p == principalId }) != null
+          };
+        }
       },
     );
 
@@ -244,13 +256,11 @@ actor class BlockHire() = this {
         #err("Project tidak ditemukan");
       };
       case (?project) {
-        // Update project dengan applicant baru
         let currentApplicants = switch (project.applicants) {
           case (null) { [] };
           case (?existing) { existing };
         };
 
-        // Cek apakah sudah pernah apply
         if (Array.find<Principal>(currentApplicants, func(p) { p == msg.caller }) != null) {
           return #err("Anda sudah melamar ke project ini");
         };
