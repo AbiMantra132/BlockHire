@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function Transaction() {
   return (
     <div className="w-full flex flex-row cursor-pointer hover:bg-[#f9f9f9] justify-between items-center gap-3 px-4 py-2 rounded-md border border-[#20202015]">
