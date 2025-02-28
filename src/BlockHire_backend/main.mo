@@ -207,6 +207,12 @@ actor class BlockHire() = this {
     #ok(newProject);
   };
 
+  public shared func getAllProject() : async [ProjectTypes.Project] {
+    let data = Iter.toArray(projects.vals());
+    
+    return data;
+  };
+
   public shared func getProject(projectId : Text) : async Result.Result<ProjectTypes.Project, Text> {
     let data = projects.get(projectId);
     switch (data) {
