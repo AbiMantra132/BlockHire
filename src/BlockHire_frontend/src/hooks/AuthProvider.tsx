@@ -143,7 +143,6 @@ export const useAuthClient = (options = defaultOptions) => {
           const result = await actor.createUser(accountIdentifier.toHex());
           if ("ok" in result) {
             setUser(result.ok);
-            console.log(result.ok);
           } else {
             console.log("User are not verifed");
             logout();

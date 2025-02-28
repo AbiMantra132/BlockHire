@@ -1,6 +1,14 @@
-export default function CardJob() {
+interface CardJob {
+  isFlex?: boolean;
+}
+
+export default function CardJob({ isFlex }: CardJob) {
   return (
-    <div className="w-full max-w-64 min-w-64 bg-white border border-[#20202023] px-3 py-2 rounded-md flex flex-col justify-start items-start gap-5 cursor-pointer hover:bg-slate-50">
+    <div
+      className={`${
+        isFlex ? "flex-1" : "w-full max-w-64"
+      }  min-w-64 bg-white border border-[#20202023] px-3 py-2 rounded-md flex flex-col justify-start items-start gap-5 cursor-pointer hover:bg-slate-50`}
+    >
       {/* HEAD */}
       <div className="flex flex-row justify-start items-center gap-2">
         <img src="images/home/tech.svg" alt="tech" className="w-4" />

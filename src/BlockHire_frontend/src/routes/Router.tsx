@@ -6,6 +6,9 @@ import CreateAccount from "../pages/CreateAccount";
 import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "../hooks/AuthProvider";
 import { useEffect } from "react";
+import FreelancerHome from "../pages/FreelancerHome";
+import DetailProject from "../pages/DetailProject";
+import Profile from "../pages/Profile";
 
 function Router() {
   const { isAuth, user, loading } = useAuth();
@@ -28,6 +31,8 @@ function Router() {
             user ? (
               user.role == "Guest" ? (
                 <CreateAccount />
+              ) : user.role == "Freelancer" ? (
+                <FreelancerHome />
               ) : (
                 <Home />
               )
@@ -39,6 +44,9 @@ function Router() {
           )
         }
       />
+
+      <Route path="/project" element={<DetailProject />} />
+      <Route path="/profile" element={<Profile />} />
 
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
