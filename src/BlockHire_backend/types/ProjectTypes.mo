@@ -14,6 +14,9 @@ module {
     title : Text;
     description : Text;
     requiredSkills : [Text];
+    scope : Text;
+    freelancer_amount : Nat;
+    level : Text;
     budget : Nat; // Total budget for the project
     deadline : Text;
     status : Text;

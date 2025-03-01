@@ -1,6 +1,9 @@
 import React from "react";
+interface CardProjectProps {
+  isForUser: boolean;
+}
 
-export default function CardProject() {
+export default function CardProject({ isForUser }: CardProjectProps) {
   return (
     <div className="w-full min-w-64 cursor-pointer hover:bg-[#fafafa] max-w- px-4 py-3 rounded-xl border border-[#20202015] flex-col justify-start items-start gap-3">
       {/* HEAD */}
@@ -18,17 +21,22 @@ export default function CardProject() {
       </div>
       {/* FOOTER */}
       <div className="flex flex-row justify-between items-end w-full mt-5">
-        <div className="flex flex-col justify-start items-start gap-1">
-          <span className="text-black opacity-40 text-sm">Date</span>
-          <span className="text-black opacity-70 text-sm">Company Name</span>
-        </div>
-        <div className="flex justify-start items-center gap-1">
-          <span className="text-[#202020] opacity-100 font-semibold text-base">
-            2
-          </span>
-
-          <img src="/images/profile/icp.png" alt="img" className="w-6" />
-        </div>
+        {isForUser ? (
+          <div className="flex flex-col justify-start items-start gap-1">
+            <span className="text-black opacity-40 text-sm">Project for</span>
+            <span className="text-black opacity-70 text-sm">Company Name</span>
+          </div>
+        ) : (
+          <div className="flex flex-col justify-start items-start gap-1">
+            <span className="text-black opacity-40 text-sm">Worked on by</span>
+            <span className="text-black opacity-70 text-sm">
+              Freelance Name
+            </span>
+          </div>
+        )}
+        <span className="text-[#FF0000] opacity-100 font-semibold text-base">
+          End date
+        </span>
       </div>
     </div>
   );

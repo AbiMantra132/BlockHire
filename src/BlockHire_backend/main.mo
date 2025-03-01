@@ -174,12 +174,19 @@ actor class BlockHire() = this {
     skills : [Text],
     budget : Text,
     duration : Text,
+    scope : Text,
+    freelancer_amount : Text,
+    level : Text,
     companyId : Principal,
     createdAt : Text,
   ) : async Result.Result<ProjectTypes.Project, Text> {
     let parsedBudget = switch (Nat.fromText(budget)) {
       case (?num) num;
       case null return #err("Invalid budget format. Please provide a valid number.");
+    };
+    let parsedFreelancerAmount = switch (Nat.fromText(freelancer_amount)) {
+      case (?num) num;
+      case null return #err("Invalid freelancer amount format. Please provide a valid number.");
     };
 
     let currentId = nextProjectId;
@@ -192,6 +199,9 @@ actor class BlockHire() = this {
       description = description;
       requiredSkills = skills;
       budget = parsedBudget;
+      scope = scope;
+      freelancer_amount = parsedFreelancerAmount;
+      level = level;
       deadline = duration;
       status = "open";
       freelancer = null;
