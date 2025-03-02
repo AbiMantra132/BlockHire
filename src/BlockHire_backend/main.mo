@@ -7,17 +7,21 @@ import Nat "mo:base/Nat";
 import Array "mo:base/Array";
 import Time "mo:base/Time";
 import Int "mo:base/Int";
+import Nat64 "mo:base/Nat64";
+import Error "mo:base/Error";
 
 // SERVICES
 import UserService "services/UserService";
 import FreelancerService "services/FreelancerService";
 import CompanyService "services/CompanyService";
+import IcpLedger "canister:icp_ledger_canister";
 
 // TYPES
 import UserTypes "types/UserTypes";
 import FreeLancerTypes "types/FreeLancerTypes";
 import CompanyTypes "types/CompanyTypes";
 import ProjectTypes "types/ProjectTypes";
+import TransactionsType "types/TransactionsType";
 
 actor class BlockHire() = this {
   // DATA
@@ -44,6 +48,12 @@ actor class BlockHire() = this {
   );
 
   private var submissions : ProjectTypes.Submissions = HashMap.HashMap<Text, ProjectTypes.Submission>(
+    10,
+    Text.equal,
+    Text.hash,
+  );
+
+  private var transactions : TransactionsType.Transactions = HashMap.HashMap<Text, TransactionsType.Transaction>(
     10,
     Text.equal,
     Text.hash,
@@ -176,7 +186,7 @@ actor class BlockHire() = this {
     duration : Text,
     companyId : Principal,
     createdAt : Text,
-    freeLancerNeeded : Nat
+    freeLancerNeeded : Nat,
   ) : async Result.Result<ProjectTypes.Project, Text> {
     let parsedBudget = switch (Nat.fromText(budget)) {
       case (?num) num;
@@ -249,9 +259,9 @@ actor class BlockHire() = this {
         switch (project.freelancer) {
           case (null) { false };
           case (?freelancers) {
-            Array.find<Principal>(freelancers, func(p) { p == principalId }) != null
+            Array.find<Principal>(freelancers, func(p) { p == principalId }) != null;
           };
-        }
+        };
       },
     );
 
@@ -308,7 +318,9 @@ actor class BlockHire() = this {
         let updatedProject = {
           project with
           freelancer = ?[freelancerId];
-          freelancerNeeded = if (project.freelancerNeeded > 0) { project.freelancerNeeded - 1 } else { 0 };
+          freelancerNeeded = if (project.freelancerNeeded > 0) {
+            project.freelancerNeeded - 1;
+          } else { 0 };
         };
 
         ignore projects.replace(projectId, updatedProject);
@@ -325,7 +337,9 @@ actor class BlockHire() = this {
       case (?project) {
         // Cek apakah freelancer yang submit adalah freelancer yang disetujui
         switch (project.freelancer) {
-          case (null) { return #err("Project belum memiliki freelancer yang disetujui"); };
+          case (null) {
+            return #err("Project belum memiliki freelancer yang disetujui");
+          };
           case (?freelancers) {
             if (Array.find<Principal>(freelancers, func(p) { p == msg.caller }) == null) {
               return #err("Anda tidak memiliki akses untuk submit project ini");
@@ -340,7 +354,7 @@ actor class BlockHire() = this {
         let submission : ProjectTypes.Submission = {
           submissionId = submissionId;
           projectId = projectId;
-          freelancerId = msg.caller;
+          freelancerId = [msg.caller];
           companyId = project.companyId;
           status = "submitted";
           owner = msg.caller;
@@ -358,5 +372,119 @@ actor class BlockHire() = this {
         #ok(());
       };
     };
+  };
+
+  public shared (msg) func approveSubmission(
+    projectId: Text,
+    submissionId : Text,
+    freelancers : [Principal] 
+  ) : async Result.Result<(), Text> {
+    switch (submissions.get(submissionId)) {
+      case null {
+        #err("Submission tidak ditemukan");
+      };
+      case (?submission) {
+        if (submission.companyId != msg.caller) {
+          return #err("Akses ditolak, perusahaan tidak match");
+        };
+
+        // Update status submission
+        let updatedSubmission = {
+          submission with
+          status = "approved";
+          freelancerId = freelancers; 
+        };
+
+        ignore submissions.replace(submissionId, updatedSubmission);
+
+        // Get project budget for payment calculation
+        let project = switch (projects.get(projectId)) {
+          case (null) return #err("Project tidak ditemukan"); 
+          case (?p) p;
+        };
+
+        // Lakukan pembayaran ke semua freelancer
+        for (freelancer in freelancers.vals()) {
+          let payment = await paymentTransaction(
+            msg.caller,
+            freelancer, 
+            Nat64.fromNat(project.budget),
+            submission.projectId,
+            Int.toText(Time.now()),
+          );
+
+          switch (payment) {
+            case (#err(e)) { 
+              return #err("Gagal transfer ke " # Principal.toText(freelancer) # ": " # e);
+            };
+            case (#ok(_)) {};
+          };
+        };
+        #ok(());
+      };
+    };
+  };
+
+  // Fungsi transaksi yang sudah dikoreksi
+  private func paymentTransaction(
+    from : Principal,
+    to : Principal,
+    amount : Nat64,
+    projectId : Text,
+    createdAt : Text,
+  ) : async Result.Result<Nat64, Text> {
+
+    // Simpan transaksi ke storage
+    let txId = Int.toText(Time.now());
+    transactions.put(
+      txId,
+      {
+        id = txId;
+        from = from;
+        to = to;
+        amount = Nat64.toNat(amount);
+        projectId = projectId;
+        timestamp = createdAt;
+      },
+    );
+
+    // transfer ICP
+    try {
+      let toAccount = await IcpLedger.account_identifier({
+        owner = to;
+        subaccount = null;
+      });
+
+      let transferArgs : IcpLedger.TransferArgs = {
+        memo = 0;
+        amount = { e8s = amount };
+        fee = { e8s = 10_000 };
+        from_subaccount = null;
+        to = toAccount;
+        created_at_time = null;
+      };
+
+      let result = await IcpLedger.transfer(transferArgs);
+
+      switch (result) {
+        case (#Ok(blockIndex)) #ok(blockIndex);
+        case (#Err(e)) throw Error.reject("Transfer error: " # debug_show (e));
+      };
+    } catch (e) {
+      #err("Error dalam transaksi: " # Error.message(e));
+    };
+  };
+
+  public query func getTransactionHistory(userPrincipal : Principal) : async [TransactionsType.Transaction] {
+    let allTransactions = transactions.vals();
+
+    let filteredTransactions = Iter.filter<TransactionsType.Transaction>(
+      allTransactions,
+      func(tx : TransactionsType.Transaction) : Bool {
+        tx.from == userPrincipal or tx.to == userPrincipal;
+      },
+    );
+
+    Iter.toArray(filteredTransactions);
   };
 };
