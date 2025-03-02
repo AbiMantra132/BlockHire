@@ -2,7 +2,6 @@ import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Principal "mo:base/Principal";
 
-
 module {
   public type Projects = HashMap.HashMap<Text, Project>;
   public type Submissions = HashMap.HashMap<Text, Submission>;
@@ -24,7 +23,7 @@ module {
     freelancer : ?[Principal]; // Freelancer IDs
     applicants : ?[Principal]; // Applicants IDs
     createdAt : Text;
-    submission : Text ; // URL atau deskripsi submission
+    submission : Text; // URL atau deskripsi submission
     freelancerApproved : Bool;
     companyApproved : Bool;
   };
@@ -32,10 +31,14 @@ module {
   public type Submission = {
     submissionId : Text;
     projectId : Text;
-    freelancerId : Principal;
+    freelancerId : [Principal];
     companyId : Principal;
     status : Text;
     owner : Principal;
     submission : Text;
   };
-}
+
+  // histori transaksi
+  // detail transaksi
+
+};
