@@ -1,11 +1,15 @@
 import React from "react";
+import { Link } from "react-router";
 interface CardProjectProps {
   isForUser: boolean;
 }
 
 export default function CardProject({ isForUser }: CardProjectProps) {
   return (
-    <div className="w-full min-w-64 cursor-pointer hover:bg-[#fafafa] max-w- px-4 py-3 rounded-xl border border-[#20202015] flex-col justify-start items-start gap-3">
+    <Link
+      to={"/project/id"}
+      className="w-full min-w-64 cursor-pointer hover:bg-[#fafafa] max-w- px-4 py-3 rounded-xl border border-[#20202015] flex-col justify-start items-start gap-3"
+    >
       {/* HEAD */}
       <div className="flex flex-col justify-start items-start w-full gap-1">
         <div
@@ -38,6 +42,6 @@ export default function CardProject({ isForUser }: CardProjectProps) {
           End date
         </span>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -23,16 +23,34 @@ export default function CreateFreelancerMain({
   data,
   setData,
 }: CreateFreelancerMainProps) {
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setData((prev) =>
+          prev ? { ...prev, profile: reader.result as string } : prev
+        );
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   return (
     <div className="w-full flex justify-center items-center">
       <div className="flex flex-col justify-center items-center max-w-lg gap-8 w-full">
         {/* LOGO */}
         <div className="flex w-32 cursor-pointer aspect-square bg-white relative justify-center items-center rounded-full overflow-hidden">
-          <div className="w-full relative z-10 aspect-square rounded-full">
-            User Profile
-          </div>
+          {data.profile ? (
+            <img src={data.profile} alt="profile" />
+          ) : (
+            <div className="w-full text-center relative z-10 aspect-square rounded-full flex justify-center items-center text-[#20202067] font-semibold">
+              Photo <br></br>Profile
+            </div>
+          )}
           <input
             type="file"
+            accept="image/*"
+            onChange={handleImageChange}
             className="w-full aspect-square absolute top-0 left-0 z-20 cursor-pointer opacity-0"
           />
         </div>

@@ -7,6 +7,7 @@ import Nat "mo:base/Nat";
 import Array "mo:base/Array";
 import Time "mo:base/Time";
 import Int "mo:base/Int";
+import Debug "mo:base/Debug";
 
 // SERVICES
 import UserService "services/UserService";

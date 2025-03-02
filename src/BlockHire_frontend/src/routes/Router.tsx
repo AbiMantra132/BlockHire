@@ -10,6 +10,9 @@ import FreelancerHome from "../pages/FreelancerHome";
 import DetailProject from "../pages/DetailProject";
 import Profile from "../pages/Profile";
 import CompanyHome from "../pages/CompanyHome";
+import DetailProjectCompany from "../pages/DetailProjectCompany";
+import SubmitProject from "../pages/SubmitProject";
+import Loading from "../pages/Loading";
 
 function Router() {
   const { isAuth, user } = useAuth();
@@ -37,9 +40,33 @@ function Router() {
 
       {/* Rute Freelancer */}
       <Route
-        path="/project"
+        path="/project/:idProject"
         element={
-          user?.role === "Freelancer" ? <DetailProject /> : <Navigate to="/" />
+          user ? (
+            user?.role === "Freelancer" ? (
+              <DetailProject />
+            ) : user?.role == "Company" ? (
+              <DetailProjectCompany />
+            ) : (
+              <Navigate to="/" />
+            )
+          ) : (
+            <Loading />
+          )
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          user ? (
+            user?.role === "Freelancer" ? (
+              <Profile />
+            ) : (
+              <Navigate to="/" />
+            )
+          ) : (
+            <Loading />
+          )
         }
       />
       <Route
@@ -48,6 +75,7 @@ function Router() {
           user?.role === "Freelancer" ? <Profile /> : <Navigate to="/" />
         }
       />
+      <Route path="/submit/:id" element={<SubmitProject />} />
 
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>

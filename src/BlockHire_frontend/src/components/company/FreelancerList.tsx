@@ -1,4 +1,3 @@
-import React from "react";
 import Bubble from "../ui/Bubble";
 import FreelancerCard from "../ui/FreelancerCard";
 
