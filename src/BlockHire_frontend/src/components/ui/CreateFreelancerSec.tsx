@@ -49,7 +49,6 @@ export default function CreateFreelancerSec({
     }
   };
   useEffect(() => {
-    console.log(skills);
     setData((prev) => (prev ? { ...prev, skills: skills } : prev));
   }, [skills]);
   return (

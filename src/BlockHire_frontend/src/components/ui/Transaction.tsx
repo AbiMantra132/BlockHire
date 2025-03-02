@@ -1,4 +1,12 @@
-export default function Transaction() {
+interface TransactionProps {
+  isForFreelancer: boolean;
+  name: string;
+}
+
+export default function Transaction({
+  isForFreelancer,
+  name,
+}: TransactionProps) {
   return (
     <div className="w-full flex flex-row cursor-pointer hover:bg-[#f9f9f9] justify-between items-center gap-3 px-4 py-2 rounded-md border border-[#20202015]">
       <div className="flex flex-row justify-start items-center gap-3">
@@ -11,7 +19,7 @@ export default function Transaction() {
         </div>
         <div className="flex flex-col justify-center items-start gap-[2px]">
           <span className="text-sm text-[#202020] font-medium opacity-80">
-            Company Name
+            {name}
           </span>
           <span className="text-xs text-[#20202061] font-medium">
             Date complate
@@ -19,7 +27,13 @@ export default function Transaction() {
         </div>
       </div>
       <div className="flex justify-end items-center gap-2">
-        <p className="font-semibold text-xl text-[#202020]">+1</p>
+        <p
+          className={`font-semibold text-xl ${
+            isForFreelancer ? "text-[#07C600]" : "text-[#D62828]"
+          }`}
+        >
+          {isForFreelancer ? "+" : "-"}1
+        </p>
         <img src="/images/profile/icp.png" alt="img" className="w-8" />
       </div>
     </div>

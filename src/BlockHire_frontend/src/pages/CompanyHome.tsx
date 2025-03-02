@@ -1,11 +1,15 @@
-import React from "react";
 import Navbar from "../components/main/Navbar";
 import Footer from "../components/main/Footer";
-import MainProfile from "../components/profile/MainProfile";
+import MainCompany from "../components/company/MainCompany";
 import { useAuth } from "../hooks/AuthProvider";
+import { useEffect } from "react";
 
-export default function Profile() {
-  const { loading } = useAuth();
+export default function CompanyHome() {
+  const { loading, user, company } = useAuth();
+  useEffect(() => {
+    console.log(user);
+    console.log(company);
+  }, [user, company]);
   return (
     <div className="w-full bg-[#E5F0F9] min-h-screen">
       {loading ? (
@@ -13,7 +17,7 @@ export default function Profile() {
       ) : (
         <>
           <Navbar />
-          <MainProfile />
+          <MainCompany />
           <Footer />
         </>
       )}

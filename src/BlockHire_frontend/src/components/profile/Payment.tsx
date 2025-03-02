@@ -1,9 +1,11 @@
 import React from "react";
 import P from "../ui/P";
-import Message from "./Message";
-import Transaction from "./Transaction";
+import Transaction from "../ui/Transaction";
+import Wallet from "../ui/Wallet";
+import { useAuth } from "../../hooks/AuthProvider";
 
 export default function Payment() {
+  const { user } = useAuth();
   return (
     <div className="w-full bg-white rounded-b-xl px-5 py-8 flex flex-col justify-start items-start gap-4">
       {/* HEAD */}
@@ -41,15 +43,18 @@ export default function Payment() {
           </div>
         </div>
       </div>
+      {/* WALLET */}
+      <Wallet balance={2} address={user.walletAddress} />
+
       {/* BODY */}
       <div className="flex flex-col justify-start items-start gap-4 w-full">
         <h3 className="font-semibold text-lg text-black">
           Latest Transactions
         </h3>
         <div className="flex flex-col justify-start items-start gap-2 w-full">
-          <Transaction />
-          <Transaction />
-          <Transaction />
+          <Transaction isForFreelancer={true} name="Company" />
+          <Transaction isForFreelancer={true} name="Company" />
+          <Transaction isForFreelancer={true} name="Company" />
         </div>
       </div>
     </div>

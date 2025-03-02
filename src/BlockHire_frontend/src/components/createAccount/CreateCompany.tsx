@@ -26,7 +26,8 @@ interface CreateCompanyProps {
 }
 
 export default function CreateCompany({ data, setData }: CreateCompanyProps) {
-  const { callFunction, user, principal, updateUser, getCompany } = useAuth();
+  const { callFunction, user, principal, updateUser, updateCompany } =
+    useAuth();
   const [isNext, setIsNext] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [isDone, setIsDone] = useState<boolean>(false);
@@ -56,10 +57,10 @@ export default function CreateCompany({ data, setData }: CreateCompanyProps) {
         date
       );
       if ("ok" in res) {
-        getCompany();
+        updateCompany(res.ok);
         updateUser({
           id: user.id,
-          username: res.ok.name,
+          username: res.ok.companyName,
           walletAddress: user.walletAddress,
           profile: res.ok.profile,
           role: "Company",
