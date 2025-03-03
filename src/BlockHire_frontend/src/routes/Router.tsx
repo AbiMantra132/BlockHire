@@ -15,10 +15,11 @@ import SubmitProject from "../pages/SubmitProject";
 import Loading from "../pages/Loading";
 
 function Router() {
-  const { isAuth, user } = useAuth();
+  const { isAuth, user, loading } = useAuth();
 
   // Menentukan halaman utama berdasarkan role user
   const mainPage = useMemo(() => {
+    console.log(user);
     if (!isAuth || !user) return <Home />;
 
     switch (user?.role) {
@@ -42,7 +43,7 @@ function Router() {
       <Route
         path="/project/:idProject"
         element={
-          user ? (
+          !loading ? (
             user?.role === "Freelancer" ? (
               <DetailProject />
             ) : user?.role == "Company" ? (
@@ -58,7 +59,7 @@ function Router() {
       <Route
         path="/profile"
         element={
-          user ? (
+          !loading ? (
             user?.role === "Freelancer" ? (
               <Profile />
             ) : (
@@ -67,12 +68,6 @@ function Router() {
           ) : (
             <Loading />
           )
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          user?.role === "Freelancer" ? <Profile /> : <Navigate to="/" />
         }
       />
       <Route path="/submit/:id" element={<SubmitProject />} />

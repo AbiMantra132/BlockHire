@@ -10,14 +10,18 @@ export default function TopServicesHome() {
         <Title>Top Services</Title>
         <P>Take a look with our best services</P>
         <div className="flex flex-row justify-start items-start gap-3 mt-4 overflow-x-scroll w-full">
-          <CardService />
-          <CardService />
-          <CardService />
-          <CardService />
-          <CardService />
-          <CardService />
-          <CardService />
-          <CardService />
+          <CardService image="service-1.svg" title="Tech & Development" />
+          <CardService image="service-2.svg" title="Design & Creative" />
+          <CardService image="service-3.svg" title="Writing & Translation" />
+          <CardService image="service-4.svg" title="Marketing & Social Media" />
+          <CardService image="service-5.svg" title="Video & Animation" />
+          <CardService image="service-6.svg" title="Business & Finance" />
+          <CardService image="service-1.svg" title="Tech & Development" />
+          <CardService image="service-2.svg" title="Design & Creative" />
+          <CardService image="service-3.svg" title="Writing & Translation" />
+          <CardService image="service-4.svg" title="Marketing & Social Media" />
+          <CardService image="service-5.svg" title="Video & Animation" />
+          <CardService image="service-6.svg" title="Business & Finance" />
         </div>
       </div>
     </Container>
