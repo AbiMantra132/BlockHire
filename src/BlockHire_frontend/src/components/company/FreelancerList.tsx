@@ -1,14 +1,20 @@
 import Bubble from "../ui/Bubble";
 import FreelancerCard from "../ui/FreelancerCard";
 
-export default function FreelancerList() {
+interface FreelancerListProps {
+  activeFreelancer: number;
+}
+
+export default function FreelancerList({
+  activeFreelancer,
+}: FreelancerListProps) {
   return (
     <div className="w-full bg-white rounded-b-xl px-5 py-8 flex flex-col justify-start items-start gap-4">
       {/* HEAD */}
       <div className="flex flex-row justify-start items-stretch w-full gap-3">
         <Bubble
           title="Active Freelancers"
-          count={20}
+          count={activeFreelancer}
           isICP={false}
           stat={2}
           detail="Hired this month"

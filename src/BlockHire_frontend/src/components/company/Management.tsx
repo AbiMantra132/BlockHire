@@ -1,7 +1,15 @@
 import Bubble from "../ui/Bubble";
 import CardProject from "../ui/CardProject";
 
-export default function Management() {
+interface ManagementProps {
+  totalProject: number;
+  completedProject: number;
+}
+
+export default function Management({
+  totalProject,
+  completedProject,
+}: ManagementProps) {
   return (
     <div className="w-full bg-white rounded-b-xl px-5 py-8 flex flex-col justify-start items-start gap-4">
       {/* HEAD */}
@@ -9,7 +17,7 @@ export default function Management() {
         {/* PROJECT */}
         <Bubble
           title="Total Projects"
-          count={5}
+          count={totalProject}
           stat={2}
           detail="this month"
           isICP={false}
@@ -17,7 +25,7 @@ export default function Management() {
         {/* COMPLATED */}
         <Bubble
           title="Projects Completed"
-          count={2}
+          count={completedProject}
           stat={1}
           detail="this month"
           isICP={false}

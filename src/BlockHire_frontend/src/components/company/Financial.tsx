@@ -3,7 +3,11 @@ import Bubble from "../ui/Bubble";
 import Wallet from "../ui/Wallet";
 import { useAuth } from "../../hooks/AuthProvider";
 
-export default function Financial() {
+interface FinancialProps {
+  totalSpending: number;
+}
+
+export default function Financial({ totalSpending }: FinancialProps) {
   const { user } = useAuth();
   return (
     <div className="w-full bg-white rounded-b-xl px-5 py-8 flex flex-col justify-start items-start gap-4">
@@ -12,7 +16,7 @@ export default function Financial() {
         {/* SPENDING */}
         <Bubble
           title="Total Spending"
-          count={2.5}
+          count={totalSpending}
           isICP={true}
           stat={2}
           detail="Spending this month"
@@ -20,7 +24,7 @@ export default function Financial() {
         {/* PENDING */}
         <Bubble
           title="Pending Payments"
-          count={1}
+          count={2}
           isICP={true}
           stat={3}
           detail="Transactions in process"
