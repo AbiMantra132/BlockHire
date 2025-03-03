@@ -26,7 +26,6 @@ BlockHire is developed by a dedicated team of three members:
 ## 🚀 Technology Stack
 - **Frontend:** React, Tailwind CSS, GSAP, Draggable React  
 - **Backend:** Motoko (Deployed on ICP)  
-- **AI Integration:** Gemini AI API, OpenAI GPT API  
 - **Blockchain:** ICP (Internet Computer), Smart Contracts  
 
 ## 🔧 Prerequisites
@@ -73,4 +72,4 @@ BlockHire aims to **bridge blockchain technology and environmental consciousness
 - *Video Call Integration**  Built-in **secure video calls** for real-time communication between freelancers and companies, ensuring **better collaboration** and **project discussions**.
 - **Subscription Plans** Offering premium features for companies and freelancers.
 
-🌍 *Join us in making a greener future with BlockHire!* 🚀
+💼 Join us in building a smarter and more secure freelance ecosystem with BlockHire! 🚀
