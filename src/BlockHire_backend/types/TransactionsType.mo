@@ -14,4 +14,13 @@ module {
     projectId : Text;
     timestamp : Text;
   };
+
+  public type CompanyDetailProject = {
+    companyId : Text;
+    totalSpending : Nat;
+    activeFreelancer : Nat;
+    totalProject : Nat;
+    pendingRequest : Nat;
+    completedProject : Nat;
+  };
 }

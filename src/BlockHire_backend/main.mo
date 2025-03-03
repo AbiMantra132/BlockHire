@@ -329,7 +329,7 @@ actor class BlockHire() = this {
     };
   };
 
-  public shared (msg) func submitProject(projectId : Text, submissionLink : Text) : async Result.Result<(), Text> {
+  public shared (msg) func submitProject(projectId : Text, submissionLink : Text, submissionImage: Text) : async Result.Result<(), Text> {
     switch (projects.get(projectId)) {
       case null {
         #err("Project tidak ditemukan");
@@ -359,6 +359,7 @@ actor class BlockHire() = this {
           status = "submitted";
           owner = msg.caller;
           submission = submissionLink;
+          submissionImage  = submissionImage;
         };
 
         // Update project dengan submission baru
@@ -375,9 +376,9 @@ actor class BlockHire() = this {
   };
 
   public shared (msg) func approveSubmission(
-    projectId: Text,
+    projectId : Text,
     submissionId : Text,
-    freelancers : [Principal] 
+    freelancers : [Principal],
   ) : async Result.Result<(), Text> {
     switch (submissions.get(submissionId)) {
       case null {
@@ -392,14 +393,14 @@ actor class BlockHire() = this {
         let updatedSubmission = {
           submission with
           status = "approved";
-          freelancerId = freelancers; 
+          freelancerId = freelancers;
         };
 
         ignore submissions.replace(submissionId, updatedSubmission);
 
         // Get project budget for payment calculation
         let project = switch (projects.get(projectId)) {
-          case (null) return #err("Project tidak ditemukan"); 
+          case (null) return #err("Project tidak ditemukan");
           case (?p) p;
         };
 
@@ -407,14 +408,14 @@ actor class BlockHire() = this {
         for (freelancer in freelancers.vals()) {
           let payment = await paymentTransaction(
             msg.caller,
-            freelancer, 
+            freelancer,
             Nat64.fromNat(project.budget),
             submission.projectId,
             Int.toText(Time.now()),
           );
 
           switch (payment) {
-            case (#err(e)) { 
+            case (#err(e)) {
               return #err("Gagal transfer ke " # Principal.toText(freelancer) # ": " # e);
             };
             case (#ok(_)) {};
@@ -425,7 +426,7 @@ actor class BlockHire() = this {
     };
   };
 
-  // Fungsi transaksi yang sudah dikoreksi
+  // Fungsi transaksi
   private func paymentTransaction(
     from : Principal,
     to : Principal,
@@ -486,5 +487,62 @@ actor class BlockHire() = this {
     );
 
     Iter.toArray(filteredTransactions);
+  };
+
+  public func getCompanyDetailProject(companyId : Principal) : async Result.Result<TransactionsType.CompanyDetailProject, Text> {
+    // Ambil semua proyek perusahaan
+    let companyProjects = Iter.toArray(
+      Iter.filter(projects.vals(), func(p : ProjectTypes.Project) : Bool { p.companyId == companyId })
+    );
+
+    let totalProject = companyProjects.size();
+    let completedProject = Array.filter(companyProjects, func(p : ProjectTypes.Project) : Bool { p.status == "completed" }).size();
+
+    // Dapatkan semua project ID perusahaan
+    let projectIds = Array.map(companyProjects, func(p : ProjectTypes.Project) : Text { p.projectId });
+
+    // Helper function untuk cek project ID
+    func containsProjectId(targetId : Text) : Bool {
+      Array.find<Text>(projectIds, func(id : Text) : Bool { id == targetId }) != null;
+    };
+
+    // Hitung permintaan pending
+    let allSubmissions = Iter.toArray(submissions.vals());
+    let pendingRequest = Array.filter(
+      allSubmissions,
+      func(s : ProjectTypes.Submission) : Bool {
+        containsProjectId(s.projectId) and s.status == "submitted"
+      },
+    ).size();
+
+    // freelancer
+    var activeFreelancers : [Principal] = [];
+    for (s in allSubmissions.vals()) {
+      if (containsProjectId(s.projectId) and s.status == "approved") {
+        for (f in s.freelancerId.vals()) {
+          if (Array.find<Principal>(activeFreelancers, func(p : Principal) : Bool { p == f }) == null) {
+            activeFreelancers := Array.append(activeFreelancers, [f]);
+          };
+        };
+      };
+    };
+
+    // Hitung total pengeluaran
+    var totalSpending : Nat = 0;
+    let allTransactions = Iter.toArray(transactions.vals());
+    for (t in allTransactions.vals()) {
+      if (t.from == companyId and containsProjectId(t.projectId)) {
+        totalSpending += t.amount;
+      };
+    };
+
+    #ok({
+      companyId = Principal.toText(companyId);
+      totalSpending = totalSpending;
+      activeFreelancer = activeFreelancers.size();
+      totalProject = totalProject;
+      pendingRequest = pendingRequest;
+      completedProject = completedProject;
+    });
   };
 };
