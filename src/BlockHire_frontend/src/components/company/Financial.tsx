@@ -38,9 +38,7 @@ export default function Financial({ totalSpending }: FinancialProps) {
           Latest Transactions
         </h3>
         <div className="flex flex-col justify-start items-start gap-2 w-full">
-          <Transaction isForFreelancer={false} name="Frelancer" />
-          <Transaction isForFreelancer={false} name="Frelancer" />
-          <Transaction isForFreelancer={false} name="Frelancer" />
+          <Transaction isForFreelancer={false} name="Sutha R" />
         </div>
       </div>
     </div>

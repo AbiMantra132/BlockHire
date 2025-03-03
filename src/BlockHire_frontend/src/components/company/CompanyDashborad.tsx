@@ -27,12 +27,19 @@ export default function CompanyDashborad() {
     totalProject: 0,
     totalSpending: 0,
   });
+  const [projects, setProjects] = useState<[]>([]);
   useEffect(() => {
     const initData = async () => {
       if (callFunction) {
         const res = await callFunction.getCompanyDetailProject(principal);
         if ("ok" in res) {
-          setData(res.ok);
+          const resProjects =
+            await callFunction.getProjectsByPrincipalCompanyId(principal);
+          if ("ok" in res) {
+            setProjects(resProjects);
+            console.log(resProjects);
+            setData(res.ok);
+          }
         }
       }
     };
@@ -53,6 +60,7 @@ export default function CompanyDashborad() {
         <Management
           completedProject={Number(data.completedProject)}
           totalProject={Number(data.totalProject)}
+          projects={projects}
         />
       )}
       {stage == "post" && <PostProject />}

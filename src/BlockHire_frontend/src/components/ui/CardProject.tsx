@@ -2,9 +2,21 @@ import React from "react";
 import { Link } from "react-router";
 interface CardProjectProps {
   isForUser: boolean;
+  title: string;
+  status: "open" | "";
+  level: "entry" | "intermediate" | "expert";
+  deadline: string;
+  freelancerApproved: boolean;
 }
 
-export default function CardProject({ isForUser }: CardProjectProps) {
+export default function CardProject({
+  isForUser,
+  title,
+  status,
+  level,
+  deadline,
+  freelancerApproved,
+}: CardProjectProps) {
   return (
     <Link
       to={"/project/id"}
@@ -15,12 +27,12 @@ export default function CardProject({ isForUser }: CardProjectProps) {
         <div
           className={`w-fit px-4 py-1 rounded-full bg-[#2F89FC] text-white text-sm`}
         >
-          Ongoing
+          {status == "open" && "Ongoing"}
         </div>
-        <h3 className="text-black font-semibold text-lg">Project Name</h3>
+        <h3 className="text-black font-semibold text-lg">{title}</h3>
         <div className="w-fit gap-2 justify-start items-center flex flex-row">
           <img src="/images/profile/level.svg" alt="img" className="w-5" />
-          <span className="text-black opacity-70 text-sm">Level</span>
+          <span className="text-black opacity-70 text-sm">{level}</span>
         </div>
       </div>
       {/* FOOTER */}
@@ -34,12 +46,12 @@ export default function CardProject({ isForUser }: CardProjectProps) {
           <div className="flex flex-col justify-start items-start gap-1">
             <span className="text-black opacity-40 text-sm">Worked on by</span>
             <span className="text-black opacity-70 text-sm">
-              Freelance Name
+              {freelancerApproved ? "Wiradarma" : "-"}
             </span>
           </div>
         )}
         <span className="text-[#FF0000] opacity-100 font-semibold text-base">
-          End date
+          {deadline}
         </span>
       </div>
     </Link>

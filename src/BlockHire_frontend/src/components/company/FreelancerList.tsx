@@ -1,5 +1,6 @@
 import Bubble from "../ui/Bubble";
 import FreelancerCard from "../ui/FreelancerCard";
+import P from "../ui/P";
 
 interface FreelancerListProps {
   activeFreelancer: number;
@@ -23,9 +24,13 @@ export default function FreelancerList({
       {/* BODY */}
       <div className="flex flex-col justify-start items-start gap-4 w-full">
         <h3 className="font-semibold text-lg text-black">List Freelancers</h3>
-        <div className="flex w-full flex-col justify-start items-start gap-2">
-          <FreelancerCard name="" job="" status="passed" profile="" />
-        </div>
+        {activeFreelancer == 0 ? (
+          <P>There is no active freelancer</P>
+        ) : (
+          <div className="flex w-full flex-col justify-start items-start gap-2">
+            <FreelancerCard name="" job="" status="passed" profile="" />
+          </div>
+        )}
       </div>
     </div>
   );
