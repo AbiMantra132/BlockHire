@@ -47,24 +47,6 @@ npm install
 mops install
 ```
 
-## 🌎 Environment Setup
-To integrate **Gemini AI** or **GPT**, you need API keys:
-
-- **Obtain Gemini API Key**
-   - Sign up at [Google AI](https://ai.google.dev/) and generate an API key.
-   - Add the key to your `/src/ECOBUDDY_backend/constants/GlobalConstants.mo` file:
-     ```sh
-     API_KEY=your_api_key_here
-     ```
-**OR**
-
-- **Obtain OpenAI GPT API Key**
-   - Sign up at [OpenAI](https://openai.com/) and generate an API key.
-   - Add the key to your `/src/ECOBUDDY_backend/constants/GlobalConstants.mo` file:
-     ```sh
-     GPT_API_KEY=your_api_key_here
-     ```
-
 ## 💻 Local Development
 To start the local development server:
 1. Clean dfx processes on system:
@@ -82,13 +64,13 @@ To start the local development server:
    dfx deploy
    ```
 
-Your application should now be running at `http://[your CANISTER_ID_ECOBUDDY_FRONTEND].localhost:4943`.
+Your application should now be running at `http://[your CANISTER_ID_BlockHire_FRONTEND].localhost:4943`.
 
 Topup Balance For Canister:
 1. **Retrieve the Canister Principal**  
-   Run the following command to get the principal of the ECOBUDDY backend canister:  
+   Run the following command to get the principal of the BlockHire backend canister:  
    ```sh
-   dfx canister call ECOBUDDY_backend getEcobuddyPrincipal
+   dfx canister call BlockHire_backend getBlockHirePrincipal
    ```  
    Copy the generated principal.
 
@@ -116,10 +98,10 @@ Topup Balance For User:
    ```
 
 ## 🔮 Conclusion & Future Plans
-EcoBuddy aims to **bridge blockchain technology and environmental consciousness** through an engaging AI-driven chatbot. Moving forward, we plan to:
+BlockHire aims to **bridge blockchain technology and environmental consciousness** through an engaging AI-driven chatbot. Moving forward, we plan to:
 - **Eco Community** A digital platform that connects environmental enthusiasts to get to know each other, communicate, and build better relationships.
 - **Eco Trash** A digital platform that helps users monetize every waste they sort and deliver to specific waste collectors, with payments made using ICP tokens.
 - **3D Models** The use of 3D models in the Chatbot and Eco Tree to enhance user interaction.
-- **Premium Features** Adding premium features as benefits for users subscribed to Ecobuddy.
+- **Premium Features** Adding premium features as benefits for users subscribed to BlockHire.
 
-🌍 *Join us in making a greener future with EcoBuddy!* 🚀
+🌍 *Join us in making a greener future with BlockHire!* 🚀
