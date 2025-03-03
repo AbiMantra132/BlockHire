@@ -29,12 +29,13 @@ module {
 
   public type Submission = {
     submissionId : Text;
+    submissionImage : Text;
+    submission : Text;
     projectId : Text;
     freelancerId : [Principal];
     companyId : Principal;
     status : Text;
     owner : Principal;
-    submission : Text;
   };
 
   // histori transaksi
