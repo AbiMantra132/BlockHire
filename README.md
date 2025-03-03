@@ -1,59 +1,125 @@
 # `BlockHire`
 
-Welcome to your new `BlockHire` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+BlockHire is a blockchain-powered job marketplace connecting **companies** with **freelancers** using **Internet Computer (ICP)** and **Internet Identity**. This platform leverages **AI-driven job matching** and **smart contracts** to enhance job filtering and secure transactions, making it superior to traditional freelance platforms.
 
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
+<p align="center">
+  <img src="https://i.imghippo.com/files/ucP2128Xx.png" width="100%">
+</p>
 
-To learn more before you start working with `BlockHire`, see the following documentation available online:
+**Video Demo**: [Video](https://www.youtube.com/watch?v=Vp9tliVhfn0)  
+**Documents Apps**: [Documents](https://drive.google.com/drive/folders/1FJM-WmmKf0G8A7nIps7uVL7myaYXoO6C?usp=sharing)
 
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
-- [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
+---
 
-If you want to start working on your project right away, you might want to try the following commands:
+## 👥 Team Members
+BlockHire is developed by a dedicated team of three members:
+- **Ida Bagus Dharma Abimantra** – Leader, Backend Developer  
+- **Anak Agung Gede Putu Wiradarma** – Full-stack Developer  
+- **I Made Sutha Raditya** – UI/UX Designer  
 
-```bash
-cd BlockHire/
-dfx help
-dfx canister --help
+## 🔥 Features
+- **Smart Contract-Based Agreements** – Freelancers and companies have separate accounts integrated with **blockchain**, ensuring secure transactions.  
+- **AI-Powered Auto Filtering** – AI automatically matches freelancers with job posts based on their **skills and expertise**.  
+- **ICP-Based Payments** – Companies must **top up their balance** before posting jobs, guaranteeing **freelancers get paid** once projects are completed.  
+- **Job Posting with Smart Contracts** – Ensures **data accuracy** and **prevents fraud** in contracts.  
+
+## 🚀 Technology Stack
+- **Frontend:** React, Tailwind CSS, GSAP, Draggable React  
+- **Backend:** Motoko (Deployed on ICP)  
+- **AI Integration:** Gemini AI API, OpenAI GPT API  
+- **Blockchain:** ICP (Internet Computer), Smart Contracts  
+
+## 🔧 Prerequisites
+Before setting up the project, ensure you have the following installed:
+- **Node.js** (v16+ recommended) [Get It From](https://nodejs.org/)  
+- **Dfinity SDK (dfx)** – To deploy on ICP [Installation Guide](https://internetcomputer.org/docs/current/developer-docs/getting-started/install)  
+- **Git** [Download](https://git-scm.com/downloads)  
+
+## 🛠 Installation
+Clone the repository and install dependencies:
+```sh
+# Clone the repo
+git clone https://github.com/AbiMantra/BlockHire.git
+cd BlockHire
+
+# Install dependencies
+npm install
+mops install
 ```
 
-## Running the project locally
+## 🌎 Environment Setup
+To integrate **Gemini AI** or **GPT**, you need API keys:
 
-If you want to test your project locally, you can use the following commands:
+- **Obtain Gemini API Key**
+   - Sign up at [Google AI](https://ai.google.dev/) and generate an API key.
+   - Add the key to your `/src/ECOBUDDY_backend/constants/GlobalConstants.mo` file:
+     ```sh
+     API_KEY=your_api_key_here
+     ```
+**OR**
 
-```bash
-# Starts the replica, running in the background
-dfx start --background
+- **Obtain OpenAI GPT API Key**
+   - Sign up at [OpenAI](https://openai.com/) and generate an API key.
+   - Add the key to your `/src/ECOBUDDY_backend/constants/GlobalConstants.mo` file:
+     ```sh
+     GPT_API_KEY=your_api_key_here
+     ```
 
-# Deploys your canisters to the replica and generates your candid interface
-dfx deploy
-```
+## 💻 Local Development
+To start the local development server:
+1. Clean dfx processes on system:
+   ```bash
+   dfx killall
+   ```
+   
+2. Deploy the ICP Ledger:
+   ```bash
+   npm run deploy-ledger
+   ```
 
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
+3. Deploy project canisters:
+   ```bash
+   dfx deploy
+   ```
 
-If you have made changes to your backend canister, you can generate a new candid interface with
+Your application should now be running at `http://[your CANISTER_ID_ECOBUDDY_FRONTEND].localhost:4943`.
 
-```bash
-npm run generate
-```
+Topup Balance For Canister:
+1. **Retrieve the Canister Principal**  
+   Run the following command to get the principal of the ECOBUDDY backend canister:  
+   ```sh
+   dfx canister call ECOBUDDY_backend getEcobuddyPrincipal
+   ```  
+   Copy the generated principal.
 
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
+2. **Get the Ledger Account ID**  
+   Use the copied principal to obtain the corresponding ledger account ID:  
+   ```sh
+   dfx ledger account-id --of-canister <PASTE_PRINCIPAL_HERE>
+   ```  
+   Copy the generated account ID.
 
-If you are making frontend changes, you can start a development server with
+3. **Transfer ICP Tokens**  
+   Send 20 ICP tokens to the account ID retrieved in the previous step:  
+   ```sh
+   dfx ledger transfer --amount 20 --memo 0 <PASTE_ACCOUNT_ID_HERE>
+   ```
 
-```bash
-npm start
-```
+Topup Balance For User:
+1. **Retrieve the User Wallet Address**  
+   In Wallet feature, copy the wallet addres
 
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
+2. **Transfer ICP Tokens**  
+   Send 20 ICP tokens to the account ID retrieved in the previous step:  
+   ```sh
+   dfx ledger transfer --amount 20 --memo 0 <PASTE_WALLET_ADDRESS_HERE>
+   ```
 
-### Note on frontend environment variables
+## 🔮 Conclusion & Future Plans
+EcoBuddy aims to **bridge blockchain technology and environmental consciousness** through an engaging AI-driven chatbot. Moving forward, we plan to:
+- **Eco Community** A digital platform that connects environmental enthusiasts to get to know each other, communicate, and build better relationships.
+- **Eco Trash** A digital platform that helps users monetize every waste they sort and deliver to specific waste collectors, with payments made using ICP tokens.
+- **3D Models** The use of 3D models in the Chatbot and Eco Tree to enhance user interaction.
+- **Premium Features** Adding premium features as benefits for users subscribed to Ecobuddy.
 
-If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
-
-- set`DFX_NETWORK` to `ic` if you are using Webpack
-- use your own preferred method to replace `process.env.DFX_NETWORK` in the autogenerated declarations
-  - Setting `canisters -> {asset_canister_id} -> declarations -> env_override to a string` in `dfx.json` will replace `process.env.DFX_NETWORK` with the string in the autogenerated declarations
-- Write your own `createActor` constructor
+🌍 *Join us in making a greener future with EcoBuddy!* 🚀
