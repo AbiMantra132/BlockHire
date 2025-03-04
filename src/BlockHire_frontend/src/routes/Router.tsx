@@ -19,7 +19,6 @@ function Router() {
 
   // Menentukan halaman utama berdasarkan role user
   const mainPage = useMemo(() => {
-    console.log(user);
     if (!isAuth || !user) return <Home />;
 
     switch (user?.role) {
