@@ -37,7 +37,6 @@ export default function CompanyDashborad() {
             await callFunction.getProjectsByPrincipalCompanyId(principal);
           if ("ok" in res) {
             setProjects(resProjects);
-            console.log(resProjects);
             setData(res.ok);
           }
         }
