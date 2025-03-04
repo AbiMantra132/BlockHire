@@ -15,7 +15,7 @@ export default function MainSubmitProject() {
   const { id } = useParams();
   const { callFunction } = useAuth();
   const [data, setData] = useState<Data>({ image: "", link: "" });
-  const [alert, setAlert] = useState<string>("");
+  const [alert, setAlert] = useState<boolean>(false);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -30,22 +30,13 @@ export default function MainSubmitProject() {
     }
   };
 
-  const handlerSubmit = async (e?: boolean) => {
-    if (!e) {
-      if (data.image == "") {
-        setAlert("Skip Image?");
-      } else if (data.image == "") {
-        setAlert("Skip Link?");
-      } else {
-      }
-    } else {
-    }
-  };
-
-  const handlerAccept = async () => {
+  const handlerSubmit = async () => {
     const res = await callFunction.submitProject(id, data.link, data.image);
-    if ("ok" in res) {
-    }
+    setData({
+      image: "",
+      link: "",
+    });
+    setAlert(true);
   };
 
   return (
@@ -91,10 +82,24 @@ export default function MainSubmitProject() {
             <input
               type="text"
               className="w-full bg-white rounded-xl px-4 py-3 outline-none"
+              value={data.link ? data.link : ""}
+              onChange={(e) =>
+                setData((prev) =>
+                  prev ? { ...prev, link: e.target.value } : prev
+                )
+              }
               placeholder="Optional Link"
             />
           </div>
           {/* ACTION */}
+          {alert && (
+            <div className="w-full flex justify-start items-start">
+              <p className="text-base font-semibold text-[#07C600] text-left">
+                Succes submit project
+              </p>
+            </div>
+          )}
+
           <div className="w-full flex flex-row justify-start items-start gap-2">
             <Button type="default" title="Submit" onclick={handlerSubmit} />
           </div>

@@ -60,8 +60,6 @@ export default function Overview() {
         <h3 className="font-semibold text-lg text-black">New Messages</h3>
         <div className="flex flex-col justify-start items-start gap-2 w-full">
           <Message />
-          <Message />
-          <Message />
         </div>
       </div>
     </div>

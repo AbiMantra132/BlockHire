@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Container from "../ui/Container";
 import Title from "../ui/Title";
 import CardJob from "../ui/CardJob";
@@ -13,7 +13,6 @@ export default function ProjectsFreelancer() {
       if (callFunction) {
         const res = await callFunction.getAllProject();
         setDatas(res);
-        console.log(res);
       }
     };
     fetchData();
@@ -26,8 +25,17 @@ export default function ProjectsFreelancer() {
           <P>No job posted yet</P>
         ) : (
           <div className="flex flex-row w-full flex-wrap gap-2">
-            {datas.map((data, index) => (
-              <CardJob isFlex={true} />
+            {datas.map((data: any, index) => (
+              <CardJob
+                isFlex={true}
+                id={data.projectId}
+                key={index}
+                title={data.title}
+                level={data.level}
+                deadline={data.deadline}
+                budget={Number(data.budget)}
+                scope={data.scope}
+              />
             ))}
           </div>
         )}

@@ -19,22 +19,22 @@ export default function Testimonial() {
           <TestimonialCard
             title="SwaraLoka.tech"
             category="Technology Company"
-            testimonial="Figma ipsum component variant main layer. Pen bullet figma layer team inspect. Inspect stroke plugin rotate device editor mask star undo move. Italic flatten figma font vector rotate fill scale shadow ."
-            rating={0}
+            testimonial="BlockHire has streamlined our hiring process, connecting us with top blockchain talent faster than ever!"
+            rating={5}
             img="testimonial-1.svg"
           />
           <TestimonialCard
             title="SwaraLoka.tech"
             category="Technology Company"
-            testimonial="Figma ipsum component variant main layer. Pen bullet figma layer team inspect. Inspect stroke plugin rotate device editor mask star undo move. Italic flatten figma font vector rotate fill scale shadow ."
-            rating={0}
+            testimonial="Thanks to BlockHire, we found highly skilled candidates who perfectly fit our company's needs."
+            rating={5}
             img="testimonial-1.svg"
           />
           <TestimonialCard
             title="SwaraLoka.tech"
             category="Technology Company"
-            testimonial="Figma ipsum component variant main layer. Pen bullet figma layer team inspect. Inspect stroke plugin rotate device editor mask star undo move. Italic flatten figma font vector rotate fill scale shadow ."
-            rating={0}
+            testimonial="BlockHire simplifies recruitment with its efficient platform, saving us time and effort in finding the right professionals."
+            rating={5}
             img="testimonial-1.svg"
           />
         </div>

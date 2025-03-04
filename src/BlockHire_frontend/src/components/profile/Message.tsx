@@ -27,7 +27,7 @@ export default function Message() {
         </div>
         <div className="flex flex-col justify-center items-start gap-[2px]">
           <span className="text-sm text-[#202020] font-medium opacity-80">
-            Company Name
+            Swaraloka
           </span>
           <span className="text-xs text-[#2F89FC] font-medium">
             +2 messages

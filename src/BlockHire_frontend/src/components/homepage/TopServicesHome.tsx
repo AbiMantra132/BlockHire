@@ -9,7 +9,7 @@ export default function TopServicesHome() {
       <div className="w-full flex flex-col justify-start items-start gap-2">
         <Title>Top Services</Title>
         <P>Take a look with our best services</P>
-        <div className="flex flex-row justify-start items-start gap-3 mt-4 overflow-x-scroll w-full">
+        <div className="flex flex-row justify-start items-start gap-3 mt-4 overflow-x-scroll no-scrollbar w-full">
           <CardService image="service-1.svg" title="Tech & Development" />
           <CardService image="service-2.svg" title="Design & Creative" />
           <CardService image="service-3.svg" title="Writing & Translation" />
