@@ -72,7 +72,7 @@ function Router() {
         path="/freelancer/:id"
         element={
           !loading ? (
-            user.role == "Company" ? (
+            user?.role == "Company" ? (
               <DetailProjectCompany />
             ) : (
               <Navigate to={"/"} />

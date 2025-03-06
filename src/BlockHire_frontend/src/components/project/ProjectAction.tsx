@@ -8,7 +8,7 @@ export default function ProjectAction() {
   const [data, setData] = useState<any>();
   const [dataCompany, setDataCompany] = useState<any>();
   const { idProject } = useParams();
-  const [isClick, setIsClick] = useState(false);
+  const [isApply, setIsApply] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -34,9 +34,16 @@ export default function ProjectAction() {
     fetch();
   }, [callFunction]);
 
-  const handlerClick = () => {
-    if (!isClick) {
-      setIsClick(true);
+  const handlerApply = async () => {
+    if (!isApply) {
+      const res = await callFunction.applyToProject(idProject);
+      if ("ok" in res) {
+        setIsApply(true);
+      }
+      if ("err" in res) {
+        setIsApply(true);
+      }
+      console.log(res);
     }
   };
 
@@ -70,23 +77,20 @@ export default function ProjectAction() {
           <P type="strong">{data ? data.level : ""} Level</P>
         </div>
       </div>
-      {user.role == "freelancer" ? (
+      {user.role == "Freelancer" ? (
         <div className="w-full px-4">
-          {!isClick && (
+          {!isApply && (
             <button
-              onClick={handlerClick}
+              onClick={handlerApply}
               className="bg-[#2F89FC] hover:bg-[#3284f0] w-full py-2 rounded-xl cursor-pointer text-white"
             >
               Apply Now
             </button>
           )}
-          {isClick && (
-            <Link
-              to={"/submit/" + idProject}
-              className="border-[#2F89FC] border flex justify-center items-center hover:bg-slate-50 w-full py-2 rounded-xl cursor-pointer text-[#2F89FC]"
-            >
-              Submit
-            </Link>
+          {isApply && (
+            <div className="border-[#2F89FC] border flex justify-center items-center hover:bg-slate-50 w-full py-2 rounded-xl cursor-pointer text-[#2F89FC]">
+              Pending
+            </div>
           )}
         </div>
       ) : (
