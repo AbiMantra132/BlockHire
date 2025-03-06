@@ -5,6 +5,7 @@ import Principal "mo:base/Principal";
 module {
   public type Projects = HashMap.HashMap<Text, Project>;
   public type Submissions = HashMap.HashMap<Text, Submission>;
+  public type FreelancerStatuses = HashMap.HashMap<Text, FreeLancerStatus>;
 
   // Type Project
   public type Project = {
@@ -26,6 +27,13 @@ module {
     submission : Text; // URL atau deskripsi submission
     freelancerApproved : Bool;
     companyApproved : Bool;
+  };
+
+  public type FreeLancerStatus = {
+    freelancerStatusId : Text;
+    freelancerId : Principal;
+    status : Text;
+    projectId : Text;
   };
 
   public type Submission = {
