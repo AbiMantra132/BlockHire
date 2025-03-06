@@ -53,6 +53,13 @@ actor class BlockHire() = this {
     Text.hash,
   );
 
+
+  private var freelancerStatus : ProjectTypes.FreelancerStatuses = HashMap.HashMap<Text, ProjectTypes.FreeLancerStatus>(
+    10,
+    Text.equal,
+    Text.hash,
+  );
+
   private var transactions : TransactionsType.Transactions = HashMap.HashMap<Text, TransactionsType.Transaction>(
     10,
     Text.equal,
@@ -233,11 +240,28 @@ actor class BlockHire() = this {
     return data;
   };
 
-  public shared func getProject(projectId : Text) : async Result.Result<ProjectTypes.Project, Text> {
+  public shared func getProject(projectId : Text) : async Result.Result<{project : ProjectTypes.Project; company : CompanyTypes.Company; freelancerStatus : ProjectTypes.FreeLancerStatus}, Text> {
     let data = projects.get(projectId);
+
     switch (data) {
       case (?isData) {
-        return #ok isData;
+        let company = switch(companies.get(isData.companyId)) {
+          case (null) { return #err("Invalid Company ID") };
+          case (?company) { company };
+        };
+
+        let freelancerStatusData = switch(freelancerStatus.get(projectId)) {
+          case (null) { return #err("Invalid Project ID") };
+          case (?status) { status };
+        };
+
+        let result = {
+          project = isData;
+          company = company;
+          freelancerStatus = freelancerStatusData;
+        };
+
+        return #ok result;
       };
       case (null) {
         return #err "Invalid Project ID";
@@ -296,11 +320,25 @@ actor class BlockHire() = this {
           applicants = ?Array.append<Principal>(currentApplicants, [msg.caller]);
         };
 
+        let idStatusFreelancer = generateRandomID();
+
+        let freelancerStatusObject : ProjectTypes.FreeLancerStatus = 
+        {
+          freelancerStatusId = idStatusFreelancer;
+          freelancerId = msg.caller;
+          status = "pending";
+          projectId = projectId;
+        };
+
+        freelancerStatus.put(idStatusFreelancer, freelancerStatusObject);
+
         ignore projects.replace(projectId, updatedProject);
         #ok(());
       };
     };
   };
+
+
 
   public shared (msg) func approveFreelancer(projectId : Text, freelancerId : Principal) : async Result.Result<(), Text> {
     switch (projects.get(projectId)) {
@@ -337,7 +375,7 @@ actor class BlockHire() = this {
     };
   };
 
-  public shared (msg) func submitProject(projectId : Text, submissionLink : Text, submissionImage: Text) : async Result.Result<(), Text> {
+  public shared (msg) func submitProject(projectId : Text, submissionLink : Text, submissionImage : Text) : async Result.Result<(), Text> {
     switch (projects.get(projectId)) {
       case null {
         #err("Project tidak ditemukan");
@@ -367,7 +405,7 @@ actor class BlockHire() = this {
           status = "submitted";
           owner = msg.caller;
           submission = submissionLink;
-          submissionImage  = submissionImage;
+          submissionImage = submissionImage;
         };
 
         // Update project dengan submission baru
@@ -422,16 +460,73 @@ actor class BlockHire() = this {
             Int.toText(Time.now()),
           );
 
+          let randomId : Text = generateRandomID();
+
           switch (payment) {
             case (#err(e)) {
               return #err("Gagal transfer ke " # Principal.toText(freelancer) # ": " # e);
             };
-            case (#ok(_)) {};
+            case (#ok(_)) {
+              let _createHistory = await historyTransaction(
+                randomId,
+                msg.caller,
+                freelancer,
+                project.budget,
+                submission.projectId,
+                Int.toText(Time.now()),
+              );
+
+            };
           };
         };
         #ok(());
       };
     };
+  };
+
+  // fungsi generate random ID
+  private func generateRandomID() : Text {
+    let currentTime = Time.now();
+    let randomBase = currentTime % 100000;
+    let randomId = Int.toText(randomBase);
+    randomId;
+  };
+
+  // Fungsi History Transaksi
+  private func historyTransaction(
+    id : Text,
+    from : Principal,
+    to : Principal,
+    amount : Nat,
+    projectId : Text,
+    Timestamp : Text,
+  ) : async Result.Result<(), Text> {
+    transactions.put(
+      id,
+      {
+        id = id;
+        from = from;
+        to = to;
+        amount = amount;
+        projectId = projectId;
+        timestamp = Timestamp;
+      },
+    );
+    #ok(());
+  };
+
+  // Fungsi Mendapatkan Histori Transaksi
+  public query func getTransactionHistory(userPrincipal : Principal) : async [TransactionsType.Transaction] {
+    let allTransactions = transactions.vals();
+
+    let filteredTransactions = Iter.filter<TransactionsType.Transaction>(
+      allTransactions,
+      func(tx : TransactionsType.Transaction) : Bool {
+        tx.from == userPrincipal or tx.to == userPrincipal;
+      },
+    );
+
+    Iter.toArray(filteredTransactions);
   };
 
   // Fungsi transaksi
@@ -484,19 +579,6 @@ actor class BlockHire() = this {
     };
   };
 
-  public query func getTransactionHistory(userPrincipal : Principal) : async [TransactionsType.Transaction] {
-    let allTransactions = transactions.vals();
-
-    let filteredTransactions = Iter.filter<TransactionsType.Transaction>(
-      allTransactions,
-      func(tx : TransactionsType.Transaction) : Bool {
-        tx.from == userPrincipal or tx.to == userPrincipal;
-      },
-    );
-
-    Iter.toArray(filteredTransactions);
-  };
-
   public func getCompanyDetailProject(companyId : Principal) : async Result.Result<TransactionsType.CompanyDetailProject, Text> {
     // Ambil semua proyek perusahaan
     let companyProjects = Iter.toArray(
@@ -524,10 +606,25 @@ actor class BlockHire() = this {
     ).size();
 
     // freelancer
-    var activeFreelancers : [Principal] = [];
+    var freelancerDetails : [FreeLancerTypes.FreeLancer] = [];
+    var activeFreelancers : [Principal] = [];  
     for (s in allSubmissions.vals()) {
       if (containsProjectId(s.projectId) and s.status == "approved") {
         for (f in s.freelancerId.vals()) {
+          switch(freelancers.get(f)) {
+            case (?freelancer) {
+              if (Array.find<FreeLancerTypes.FreeLancer>(
+                freelancerDetails, 
+                func(fd : FreeLancerTypes.FreeLancer) : Bool { 
+                  fd.id == freelancer.id 
+                }
+              ) == null) {
+                freelancerDetails := Array.append(freelancerDetails, [freelancer]);
+              }
+            };
+            case null { };
+          };
+          
           if (Array.find<Principal>(activeFreelancers, func(p : Principal) : Bool { p == f }) == null) {
             activeFreelancers := Array.append(activeFreelancers, [f]);
           };
@@ -545,12 +642,58 @@ actor class BlockHire() = this {
     };
 
     #ok({
-      companyId = Principal.toText(companyId);
+      companyId = companyId;
       totalSpending = totalSpending;
       activeFreelancer = activeFreelancers.size();
       totalProject = totalProject;
       pendingRequest = pendingRequest;
       completedProject = completedProject;
+      listFreelancer = freelancerDetails;
+    });
+  };
+
+  public func getFreelancerDetail(freelancerId : Principal) : async Result.Result<TransactionsType.FreelancerDetailProject, Text> {
+    // Get all projects where freelancer is involved
+    let freelancerProjects = Iter.toArray(
+      Iter.filter(projects.vals(), func(p : ProjectTypes.Project) : Bool { 
+        switch(p.freelancer) {
+          case(null) { false };
+          case(?freelancers) {
+            Array.find<Principal>(freelancers, func(f : Principal) : Bool { f == freelancerId }) != null
+          };
+        }
+      })
+    );
+
+    let activeProjects = Array.filter(freelancerProjects, func(p : ProjectTypes.Project) : Bool { 
+      not Text.equal(p.status, "completed") and not Text.equal(p.status, "passed");
+    }).size();
+
+    // Get all submissions for pending payments
+    let allSubmissions = Iter.toArray(submissions.vals());
+    let pendingPayments = Array.filter(
+      allSubmissions,
+      func(s : ProjectTypes.Submission) : Bool {
+        Array.find<Principal>(s.freelancerId, func(f : Principal) : Bool { f == freelancerId }) != null 
+        and s.status == "submitted"
+      }
+    ).size();
+
+    // Calculate total earnings
+    var totalEarning : Nat = 0;
+    let allTransactions = Iter.toArray(transactions.vals());
+    for (t in allTransactions.vals()) {
+      if (t.to == freelancerId) {
+        totalEarning += t.amount;
+      };
+    };
+
+    #ok({
+      freelancerId = freelancerId;
+      totalEarning = totalEarning;
+      activeProject = activeProjects;
+      pendingPayment = pendingPayments;
+      myProject = freelancerProjects;
     });
   };
 };
