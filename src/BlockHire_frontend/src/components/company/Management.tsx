@@ -1,5 +1,6 @@
 import Bubble from "../ui/Bubble";
 import CardProject from "../ui/CardProject";
+import P from "../ui/P";
 
 interface ManagementProps {
   totalProject: number;
@@ -36,19 +37,25 @@ export default function Management({
       {/* BODY */}
       <div className="flex flex-col justify-start items-start gap-4 w-full">
         <h3 className="font-semibold text-lg text-black">List Projects</h3>
-        <div className="grid grid-flow-row grid-cols-2 flex-col justify-start items-start gap-2 w-full">
-          {projects.map((project: any, index) => (
-            <CardProject
-              isForUser={false}
-              title={project.title}
-              status={project.status}
-              level={project.level}
-              deadline={project.deadline}
-              freelancerApproved={project.freelancerApproved}
-              key={index}
-            />
-          ))}
-        </div>
+        {projects.length == 0 ? (
+          <div className="w-full flex justify-start items-start">
+            <P>There is no project posted</P>
+          </div>
+        ) : (
+          <div className="grid grid-flow-row grid-cols-2 flex-col justify-start items-start gap-2 w-full">
+            {projects.map((project: any, index) => (
+              <CardProject
+                isForUser={false}
+                title={project.title}
+                status={project.status}
+                level={project.level}
+                deadline={project.deadline}
+                freelancerApproved={project.freelancerApproved}
+                key={index}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
