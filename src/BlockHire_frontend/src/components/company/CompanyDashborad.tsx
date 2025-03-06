@@ -64,7 +64,10 @@ export default function CompanyDashborad() {
       )}
       {stage == "post" && <PostProject />}
       {stage == "financial" && (
-        <Financial totalSpending={Number(data.totalSpending)} />
+        <Financial
+          totalSpending={Number(data.totalSpending)}
+          latestTransaction={[]}
+        />
       )}
       {stage == "freelancer" && (
         <FreelancerList activeFreelancer={Number(data.activeFreelancer)} />
