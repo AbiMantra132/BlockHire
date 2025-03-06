@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Bubble from "../ui/Bubble";
 import CardProject from "../ui/CardProject";
 import P from "../ui/P";
@@ -13,6 +14,9 @@ export default function Management({
   completedProject,
   projects,
 }: ManagementProps) {
+  useEffect(() => {
+    console.log(projects);
+  }, [projects]);
   return (
     <div className="w-full bg-white rounded-b-xl px-5 py-8 flex flex-col justify-start items-start gap-4">
       {/* HEAD */}
@@ -45,6 +49,7 @@ export default function Management({
           <div className="grid grid-flow-row grid-cols-2 flex-col justify-start items-start gap-2 w-full">
             {projects.map((project: any, index) => (
               <CardProject
+                id={project.projectId}
                 isForUser={false}
                 title={project.title}
                 status={project.status}

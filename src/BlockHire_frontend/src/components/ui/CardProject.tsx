@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 interface CardProjectProps {
+  id: string;
   isForUser: boolean;
   title: string;
   status: "open" | "";
@@ -10,6 +11,7 @@ interface CardProjectProps {
 }
 
 export default function CardProject({
+  id,
   isForUser,
   title,
   status,
@@ -19,7 +21,7 @@ export default function CardProject({
 }: CardProjectProps) {
   return (
     <Link
-      to={"/project/id"}
+      to={"/project/" + id}
       className="w-full min-w-64 cursor-pointer hover:bg-[#fafafa] max-w- px-4 py-3 rounded-xl border border-[#20202015] flex-col justify-start items-start gap-3"
     >
       {/* HEAD */}

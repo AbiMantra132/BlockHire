@@ -4,7 +4,7 @@ import P from "../ui/P";
 import { useEffect, useState } from "react";
 
 export default function ProjectAction() {
-  const { callFunction } = useAuth();
+  const { callFunction, user } = useAuth();
   const [data, setData] = useState<any>();
   const [dataCompany, setDataCompany] = useState<any>();
   const { idProject } = useParams();
@@ -40,6 +40,10 @@ export default function ProjectAction() {
     }
   };
 
+  const handlerStop = async () => {
+    console.log("Stopping Project");
+  };
+
   return (
     <div className="flex flex-col justify-start items-start min-w-96 bg-white rounded-xl  py-6 gap-4">
       <div className="flex flex-row justify-start items-center gap-3 px-4">
@@ -66,24 +70,35 @@ export default function ProjectAction() {
           <P type="strong">{data ? data.level : ""} Level</P>
         </div>
       </div>
-      <div className="w-full px-4">
-        {!isClick && (
+      {user.role == "freelancer" ? (
+        <div className="w-full px-4">
+          {!isClick && (
+            <button
+              onClick={handlerClick}
+              className="bg-[#2F89FC] hover:bg-[#3284f0] w-full py-2 rounded-xl cursor-pointer text-white"
+            >
+              Apply Now
+            </button>
+          )}
+          {isClick && (
+            <Link
+              to={"/submit/" + idProject}
+              className="border-[#2F89FC] border flex justify-center items-center hover:bg-slate-50 w-full py-2 rounded-xl cursor-pointer text-[#2F89FC]"
+            >
+              Submit
+            </Link>
+          )}
+        </div>
+      ) : (
+        <div className="w-full px-4">
           <button
-            onClick={handlerClick}
+            onClick={handlerStop}
             className="bg-[#2F89FC] hover:bg-[#3284f0] w-full py-2 rounded-xl cursor-pointer text-white"
           >
-            Apply Now
+            Stop Post
           </button>
-        )}
-        {isClick && (
-          <Link
-            to={"/submit/" + idProject}
-            className="border-[#2F89FC] border flex justify-center items-center hover:bg-slate-50 w-full py-2 rounded-xl cursor-pointer text-[#2F89FC]"
-          >
-            Submit
-          </Link>
-        )}
-      </div>
+        </div>
+      )}
       <div className="flex justify-start items-center gap-3 px-4 border-t pt-4 border-[#2020201b] w-full">
         <div className="relative flex justify-center items-center w-12 aspect-square">
           <img

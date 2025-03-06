@@ -6,6 +6,7 @@ export default function Projects() {
   return (
     <div className="w-full bg-white rounded-b-xl px-5 py-8 grid grid-cols-2 flex-row justify-start items-start gap-2 flex-wrap">
       <CardProject
+        id="dummy"
         isForUser={true}
         title="Frontend Development"
         deadline="20 Maret 2025"
@@ -14,6 +15,7 @@ export default function Projects() {
         freelancerApproved={false}
       />
       <CardProject
+        id="dummy"
         isForUser={true}
         title="DAPPs Development"
         deadline="20 Maret 2025"

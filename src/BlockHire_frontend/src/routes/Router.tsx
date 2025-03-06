@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useAuth } from "../hooks/AuthProvider";
 
 // Page Imports
@@ -19,7 +19,7 @@ function Router() {
 
   // Menentukan halaman utama berdasarkan role user
   const mainPage = useMemo(() => {
-    if (!isAuth || !user) return <Loading />;
+    if (!isAuth || !user) return <Home />;
 
     switch (user?.role) {
       case "Guest":
@@ -43,12 +43,10 @@ function Router() {
         path="/project/:idProject"
         element={
           !loading ? (
-            user?.role === "Freelancer" ? (
-              <DetailProject />
-            ) : user?.role == "Company" ? (
-              <DetailProjectCompany />
-            ) : (
+            user?.role === "Guest" || !user ? (
               <Navigate to="/" />
+            ) : (
+              <DetailProject />
             )
           ) : (
             <Loading />
@@ -63,6 +61,21 @@ function Router() {
               <Profile />
             ) : (
               <Navigate to="/" />
+            )
+          ) : (
+            <Loading />
+          )
+        }
+      />
+
+      <Route
+        path="/freelancer/:id"
+        element={
+          !loading ? (
+            user.role == "Company" ? (
+              <DetailProjectCompany />
+            ) : (
+              <Navigate to={"/"} />
             )
           ) : (
             <Loading />
