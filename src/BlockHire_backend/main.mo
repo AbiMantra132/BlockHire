@@ -53,7 +53,6 @@ actor class BlockHire() = this {
     Text.hash,
   );
 
-
   private var freelancerStatus : ProjectTypes.FreelancerStatuses = HashMap.HashMap<Text, ProjectTypes.FreeLancerStatus>(
     10,
     Text.equal,
@@ -160,6 +159,7 @@ actor class BlockHire() = this {
       };
     };
   };
+  
   public shared func createCompany(
     userId : Principal,
     profile : Text,
@@ -232,7 +232,7 @@ actor class BlockHire() = this {
     return data;
   };
 
-  public shared func getProject(projectId : Text) : async Result.Result<{project : ProjectTypes.Project; company : CompanyTypes.Company; freelancerStatus : ProjectTypes.FreeLancerStatus}, Text> {
+  public shared func getProject(projectId : Text) : async Result.Result<{project : ProjectTypes.Project; company : CompanyTypes.Company;}, Text> {
     let data = projects.get(projectId);
 
     switch (data) {
@@ -242,15 +242,9 @@ actor class BlockHire() = this {
           case (?company) { company };
         };
 
-        let freelancerStatusData = switch(freelancerStatus.get(projectId)) {
-          case (null) { return #err("Invalid Project ID") };
-          case (?status) { status };
-        };
-
         let result = {
           project = isData;
           company = company;
-          freelancerStatus = freelancerStatusData;
         };
 
         return #ok result;
