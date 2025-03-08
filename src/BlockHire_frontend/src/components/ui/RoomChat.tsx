@@ -22,8 +22,8 @@ export default function RoomChat({ isActive, onClick }: RoomChatProps) {
               <img src="" alt="" />
             </div>
             <div className="flex flex-col justify-center items-start">
-              <p className="font-semibold text-white text-base">Name</p>
-              <p className="font-light text-white text-sm opacity-60">Status</p>
+              <p className="font-semibold text-white text-base">CryptTech</p>
+              <p className="font-light text-white text-sm opacity-60">Online</p>
             </div>
           </div>
           {/* CLOSE */}
@@ -36,11 +36,20 @@ export default function RoomChat({ isActive, onClick }: RoomChatProps) {
         </div>
         {/* BODY */}
         <div className="flex flex-col justify-start items-start w-full px-6 py-6 gap-2 h-full overflow-y-scroll">
-          <ChatBubble isUser={true} value="Yo go" />
-          <ChatBubble isUser={false} value="Yo go" />
-          <ChatBubble isUser={false} value="Yo go" />
-          <ChatBubble isUser={false} value="Yo go" />
-          <ChatBubble isUser={false} value="Yo go" />
+          <ChatBubble
+            isUser={true}
+            value="Hi, what do you think about this projects?"
+          />
+          <ChatBubble
+            isUser={false}
+            value="Oh for me, it's very important to make our company more shine than other company"
+          />
+          <ChatBubble
+            isUser={false}
+            value="I hope you can be our partner to successful our mission to become the best cryptocurrency framework ever sir!"
+          />
+          <ChatBubble isUser={false} value="Let's do the deal now!" />
+          <ChatBubble isUser={true} value="Okay, nice to meet you sir" />
         </div>
         {/* INPUT */}
         <div className="w-full absolute bottom-0 left-0 pb-4 px-6 py-3 flex justify-between bg-[#E5F0F9] items-center gap-3">
