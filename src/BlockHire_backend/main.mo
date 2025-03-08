@@ -5,16 +5,13 @@ import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Nat "mo:base/Nat";
 import Array "mo:base/Array";
-import Time "mo:base/Time";
-import Int "mo:base/Int";
-import Nat64 "mo:base/Nat64";
-import Error "mo:base/Error";
 
 // SERVICES
 import UserService "services/UserService";
 import FreelancerService "services/FreelancerService";
 import CompanyService "services/CompanyService";
-import IcpLedger "canister:icp_ledger_canister";
+import HistoryService "services/HistoryService";
+import ProjectService "services/ProjectService";
 
 // TYPES
 import UserTypes "types/UserTypes";
@@ -203,27 +200,20 @@ actor class BlockHire() = this {
     let currentId = nextProjectId;
     nextProjectId += 1;
 
-    let newProject : ProjectTypes.Project = {
-      projectId = Nat.toText(currentId);
-      companyId = companyId;
-      title = title;
-      description = description;
-      requiredSkills = skills;
-      budget = parsedBudget;
-      deadline = duration;
-      status = "open";
-      freelancer = null;
-      applicants = null;
-      createdAt = createdAt;
-      submission = "";
-      freelancerNeeded = freeLancerNeeded;
-      freelancerApproved = false;
-      companyApproved = false;
-    };
+    let newProject = await ProjectService.handlecreateProject(
+      title,
+      description,
+      skills,
+      duration,
+      companyId,
+      createdAt,
+      freeLancerNeeded,
+      currentId,
+      parsedBudget,
+      projects
+    );
 
-    projects.put(Nat.toText(currentId), newProject);
-
-    #ok(newProject);
+    return newProject;
   };
 
   public shared func getAllProject() : async [ProjectTypes.Project] {
@@ -233,178 +223,27 @@ actor class BlockHire() = this {
   };
 
   public shared func getProject(projectId : Text) : async Result.Result<{project : ProjectTypes.Project; company : CompanyTypes.Company;}, Text> {
-    let data = projects.get(projectId);
-
-    switch (data) {
-      case (?isData) {
-        let company = switch(companies.get(isData.companyId)) {
-          case (null) { return #err("Invalid Company ID") };
-          case (?company) { company };
-        };
-
-        let result = {
-          project = isData;
-          company = company;
-        };
-
-        return #ok result;
-      };
-      case (null) {
-        return #err "Invalid Project ID";
-      };
-    };
+    return await ProjectService.handlegetProject(projectId, projects, companies);
   };
 
   public shared func getProjectsByPrincipalCompanyId(principalId : Principal) : async [ProjectTypes.Project] {
-    let allProjects = Iter.toArray(projects.vals());
-
-    let filteredProjects = Array.filter<ProjectTypes.Project>(
-      allProjects,
-      func(project : ProjectTypes.Project) : Bool {
-        return project.companyId == principalId;
-      },
-    );
-
-    return filteredProjects;
+    await ProjectService.handlegetProjectsByPrincipalCompanyId(principalId, projects);
   };
 
   public shared func getProjectsByFreeLancerIds(principalId : Principal) : async [ProjectTypes.Project] {
-    let allProjects = Iter.toArray(projects.vals());
-
-    let filteredProjects = Array.filter<ProjectTypes.Project>(
-      allProjects,
-      func(project : ProjectTypes.Project) : Bool {
-        switch (project.freelancer) {
-          case (null) { false };
-          case (?freelancers) {
-            Array.find<Principal>(freelancers, func(p) { p == principalId }) != null;
-          };
-        };
-      },
-    );
-
-    return filteredProjects;
+    await ProjectService.handlegetProjectsByFreeLancerIds(principalId, projects);
   };
 
   public shared (msg) func applyToProject(projectId : Text) : async Result.Result<(), Text> {
-    switch (projects.get(projectId)) {
-      case null {
-        #err("Project tidak ditemukan");
-      };
-      case (?project) {
-        let currentApplicants = switch (project.applicants) {
-          case (null) { [] };
-          case (?existing) { existing };
-        };
-
-        if (Array.find<Principal>(currentApplicants, func(p) { p == msg.caller }) != null) {
-          return #err("Anda sudah melamar ke project ini");
-        };
-
-        let updatedProject = {
-          project with
-          applicants = ?Array.append<Principal>(currentApplicants, [msg.caller]);
-        };
-
-        let idStatusFreelancer = generateRandomID();
-
-        let freelancerStatusObject : ProjectTypes.FreeLancerStatus = 
-        {
-          freelancerStatusId = idStatusFreelancer;
-          freelancerId = msg.caller;
-          status = "pending";
-          projectId = projectId;
-        };
-
-        freelancerStatus.put(idStatusFreelancer, freelancerStatusObject);
-
-        ignore projects.replace(projectId, updatedProject);
-        #ok(());
-      };
-    };
+    await ProjectService.handleapplyToProject(projectId, msg.caller, projects, freelancerStatus);
   };
 
-
-
   public shared (msg) func approveFreelancer(projectId : Text, freelancerId : Principal) : async Result.Result<(), Text> {
-    switch (projects.get(projectId)) {
-      case null {
-        #err("Project tidak ditemukan");
-      };
-      case (?project) {
-        // Cek apakah project ini milik perusahaan yang memanggil fungsi ini
-        if (project.companyId != msg.caller) {
-          return #err("Anda tidak memiliki akses untuk menyetujui freelancer");
-        };
-
-        // Cek apakah freelancer sudah apply
-        let currentApplicants = switch (project.applicants) {
-          case (null) { [] };
-          case (?existing) { existing };
-        };
-        if (Array.find<Principal>(currentApplicants, func(p) { p == freelancerId }) == null) {
-          return #err("Freelancer belum melamar ke project ini");
-        };
-
-        // Update project dengan freelancer yang disetujui
-        let updatedProject = {
-          project with
-          freelancer = ?[freelancerId];
-          freelancerNeeded = if (project.freelancerNeeded > 0) {
-            project.freelancerNeeded - 1;
-          } else { 0 };
-        };
-
-        ignore projects.replace(projectId, updatedProject);
-        #ok(());
-      };
-    };
+    await ProjectService.handleapproveFreelancer(projectId, freelancerId, projects, msg.caller);
   };
 
   public shared (msg) func submitProject(projectId : Text, submissionLink : Text, submissionImage : Text) : async Result.Result<(), Text> {
-    switch (projects.get(projectId)) {
-      case null {
-        #err("Project tidak ditemukan");
-      };
-      case (?project) {
-        // Cek apakah freelancer yang submit adalah freelancer yang disetujui
-        switch (project.freelancer) {
-          case (null) {
-            return #err("Project belum memiliki freelancer yang disetujui");
-          };
-          case (?freelancers) {
-            if (Array.find<Principal>(freelancers, func(p) { p == msg.caller }) == null) {
-              return #err("Anda tidak memiliki akses untuk submit project ini");
-            };
-          };
-        };
-
-        let currentTime = Time.now();
-        let randomBase = currentTime % 100000;
-        let submissionId = Int.toText(randomBase);
-
-        let submission : ProjectTypes.Submission = {
-          submissionId = submissionId;
-          projectId = projectId;
-          freelancerId = [msg.caller];
-          companyId = project.companyId;
-          status = "submitted";
-          owner = msg.caller;
-          submission = submissionLink;
-          submissionImage = submissionImage;
-        };
-
-        // Update project dengan submission baru
-        let updatedProject = {
-          project with
-          submission = submissionLink;
-        };
-
-        submissions.put(submissionId, submission);
-        ignore projects.replace(projectId, updatedProject);
-        #ok(());
-      };
-    };
+    await ProjectService.handlesubmitProject(projectId, submissionLink, submissionImage, projects, msg.caller, submissions);
   };
 
   public shared (msg) func approveSubmission(
@@ -412,157 +251,12 @@ actor class BlockHire() = this {
     submissionId : Text,
     freelancers : [Principal],
   ) : async Result.Result<(), Text> {
-    switch (submissions.get(submissionId)) {
-      case null {
-        #err("Submission tidak ditemukan");
-      };
-      case (?submission) {
-        if (submission.companyId != msg.caller) {
-          return #err("Akses ditolak, perusahaan tidak match");
-        };
-
-        // Update status submission
-        let updatedSubmission = {
-          submission with
-          status = "approved";
-          freelancerId = freelancers;
-        };
-
-        ignore submissions.replace(submissionId, updatedSubmission);
-
-        // Get project budget for payment calculation
-        let project = switch (projects.get(projectId)) {
-          case (null) return #err("Project tidak ditemukan");
-          case (?p) p;
-        };
-
-        // Lakukan pembayaran ke semua freelancer
-        for (freelancer in freelancers.vals()) {
-          let payment = await paymentTransaction(
-            msg.caller,
-            freelancer,
-            Nat64.fromNat(project.budget),
-            submission.projectId,
-            Int.toText(Time.now()),
-          );
-
-          let randomId : Text = generateRandomID();
-
-          switch (payment) {
-            case (#err(e)) {
-              return #err("Gagal transfer ke " # Principal.toText(freelancer) # ": " # e);
-            };
-            case (#ok(_)) {
-              let _createHistory = await historyTransaction(
-                randomId,
-                msg.caller,
-                freelancer,
-                project.budget,
-                submission.projectId,
-                Int.toText(Time.now()),
-              );
-
-            };
-          };
-        };
-        #ok(());
-      };
-    };
-  };
-
-  // fungsi generate random ID
-  private func generateRandomID() : Text {
-    let currentTime = Time.now();
-    let randomBase = currentTime % 100000;
-    let randomId = Int.toText(randomBase);
-    randomId;
-  };
-
-  // Fungsi History Transaksi
-  private func historyTransaction(
-    id : Text,
-    from : Principal,
-    to : Principal,
-    amount : Nat,
-    projectId : Text,
-    Timestamp : Text,
-  ) : async Result.Result<(), Text> {
-    transactions.put(
-      id,
-      {
-        id = id;
-        from = from;
-        to = to;
-        amount = amount;
-        projectId = projectId;
-        timestamp = Timestamp;
-      },
-    );
-    #ok(());
+    return await ProjectService.approveSubmission(projectId, submissionId, freelancers, submissions, projects, msg.caller, transactions);
   };
 
   // Fungsi Mendapatkan Histori Transaksi
-  public query func getTransactionHistory(userPrincipal : Principal) : async [TransactionsType.Transaction] {
-    let allTransactions = transactions.vals();
-
-    let filteredTransactions = Iter.filter<TransactionsType.Transaction>(
-      allTransactions,
-      func(tx : TransactionsType.Transaction) : Bool {
-        tx.from == userPrincipal or tx.to == userPrincipal;
-      },
-    );
-
-    Iter.toArray(filteredTransactions);
-  };
-
-  // Fungsi transaksi
-  private func paymentTransaction(
-    from : Principal,
-    to : Principal,
-    amount : Nat64,
-    projectId : Text,
-    createdAt : Text,
-  ) : async Result.Result<Nat64, Text> {
-
-    // Simpan transaksi ke storage
-    let txId = Int.toText(Time.now());
-    transactions.put(
-      txId,
-      {
-        id = txId;
-        from = from;
-        to = to;
-        amount = Nat64.toNat(amount);
-        projectId = projectId;
-        timestamp = createdAt;
-      },
-    );
-
-    // transfer ICP
-    try {
-      let toAccount = await IcpLedger.account_identifier({
-        owner = to;
-        subaccount = null;
-      });
-
-      let transferArgs : IcpLedger.TransferArgs = {
-        memo = 0;
-        amount = { e8s = amount };
-        fee = { e8s = 10_000 };
-        from_subaccount = null;
-        to = toAccount;
-        created_at_time = null;
-      };
-
-      let result = await IcpLedger.transfer(transferArgs);
-
-      switch (result) {
-        case (#Ok(blockIndex)) #ok(blockIndex);
-        case (#Err(e)) throw Error.reject("Transfer error: " # debug_show (e));
-      };
-    } catch (e) {
-      #err("Error dalam transaksi: " # Error.message(e));
-    };
+  public shared func getTransactionHistory(userPrincipal : Principal) : async [TransactionsType.Transaction] {
+    await HistoryService.handlegetTransactionHistory(userPrincipal, transactions);
   };
 
   public func getCompanyDetailProject(companyId : Principal) : async Result.Result<TransactionsType.CompanyDetailProject, Text> {
