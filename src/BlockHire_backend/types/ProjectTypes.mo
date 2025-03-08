@@ -20,7 +20,6 @@ module {
     budget : Nat; // Total budget for the project
     deadline : Text;
     status : Text;
-    freelancerNeeded : Nat;
     freelancer : ?[Principal]; // Freelancer IDs
     applicants : ?[Principal]; // Applicants IDs
     createdAt : Text;

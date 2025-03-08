@@ -64,7 +64,7 @@ export default function CreateFreelancer({
         updateFreelancer(res.ok);
         updateUser({
           id: user.id,
-          username: res.ok.name,
+          username: res.ok.username,
           walletAddress: user.walletAddress,
           profile: res.ok.profile,
           role: "Freelancer",

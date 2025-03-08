@@ -196,7 +196,6 @@ actor class BlockHire() = this {
     level : Text,
     companyId : Principal,
     createdAt : Text,
-    freeLancerNeeded : Nat,
   ) : async Result.Result<ProjectTypes.Project, Text> {
     let parsedBudget = switch (Nat.fromText(budget)) {
       case (?num) num;
@@ -226,10 +225,21 @@ actor class BlockHire() = this {
       applicants = null;
       createdAt = createdAt;
       submission = "";
-      freelancerNeeded = freeLancerNeeded;
       freelancerApproved = false;
       companyApproved = false;
     };
+
+    let idStatusFreelancer = generateRandomID();
+
+      let freelancerStatusObject : ProjectTypes.FreeLancerStatus = 
+        {
+          freelancerStatusId = idStatusFreelancer;
+          freelancerId = Principal.fromText("aaaaa-aa");
+          status = "pending";
+          projectId = Nat.toText(currentId);
+        };
+
+        freelancerStatus.put(idStatusFreelancer, freelancerStatusObject);
 
     projects.put(Nat.toText(currentId), newProject);
 
@@ -366,8 +376,8 @@ actor class BlockHire() = this {
         let updatedProject = {
           project with
           freelancer = ?[freelancerId];
-          freelancerNeeded = if (project.freelancerNeeded > 0) {
-            project.freelancerNeeded - 1;
+          freelancerNeeded = if (project.freelancer_amount > 0) {
+            project.freelancer_amount - 1;
           } else { 0 };
         };
 

@@ -1,8 +1,11 @@
+import { Link } from "react-router";
+
 interface FreelancerCardProps {
   name: string;
   job: string;
   status: "active" | "passed";
   profile: string;
+  isWhite?: boolean;
 }
 
 export default function FreelancerCard({
@@ -10,9 +13,15 @@ export default function FreelancerCard({
   job,
   status,
   profile,
+  isWhite,
 }: FreelancerCardProps) {
   return (
-    <div className="w-full flex flex-row cursor-pointer hover:bg-[#f9f9f9] justify-between items-center gap-3 px-4 py-2 rounded-md border border-[#20202015]">
+    <Link
+      to={"/freelancer/id"}
+      className={`w-full flex flex-row cursor-pointer hover:bg-[#f9f9f9] justify-between items-center gap-3 px-4 py-2 rounded-md border border-[#20202015] ${
+        isWhite && "bg-white"
+      }`}
+    >
       <div className="flex flex-row justify-start items-center gap-3">
         <div className="w-12 aspect-square border rounded-full border-[#20202015] flex justify-center items-center">
           <img src={profile} alt="img" className="w-full" />
@@ -36,6 +45,6 @@ export default function FreelancerCard({
           <p className={`font-normal text-sm text-white`}>Passed</p>
         </div>
       )}
-    </div>
+    </Link>
   );
 }
