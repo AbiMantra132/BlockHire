@@ -3,7 +3,7 @@
 BlockHire is a blockchain-powered job marketplace connecting **companies** with **freelancers** using **Internet Computer (ICP)**. This platform leverages **AI-driven job matching** where the AI instantly shortlists candidates and dynamically optimizes hiring workflows, slashing recruitment time while boosting retention and **smart contracts** to ensure secure transactions, making it superior to traditional freelance platforms. Combined with **Internet Identity** for secure, passwordless access, BlockHire eliminates fraud, delays, and breaches, offering a transparent, efficient alternative to traditional platform
 
 <p align="center">
-  <img src="https://www.imghippo.com/i/iDT6648Nto.png" width="100%">
+  <img src="https://i.imghippo.com/files/iDT6648Nto.png" alt="" border="0">
 </p>
 
 **Video Demo**: [Video](https://youtu.be/GSCzvJTQ6Hg?si=D_ssT6ntcn4UJ_EN)  
