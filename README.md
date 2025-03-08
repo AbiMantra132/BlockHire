@@ -1,59 +1,75 @@
 # `BlockHire`
 
-Welcome to your new `BlockHire` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+BlockHire is a blockchain-powered job marketplace connecting **companies** with **freelancers** using **Internet Computer (ICP)**. This platform leverages **AI-driven job matching** where the AI instantly shortlists candidates and dynamically optimizes hiring workflows, slashing recruitment time while boosting retention and **smart contracts** to ensure secure transactions, making it superior to traditional freelance platforms. Combined with **Internet Identity** for secure, passwordless access, BlockHire eliminates fraud, delays, and breaches, offering a transparent, efficient alternative to traditional platform
 
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
+<p align="center">
+  <img src="https://i.imghippo.com/files/iDT6648Nto.png" alt="" border="0">
+</p>
 
-To learn more before you start working with `BlockHire`, see the following documentation available online:
+**Video Demo**: [Video](https://youtu.be/GSCzvJTQ6Hg?si=D_ssT6ntcn4UJ_EN)  
+**Documents Apps**: [Documents](https://drive.google.com/drive/u/2/folders/1bE4IAs7unsBioiX3FViq5FeEeAY9cm2x)
 
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
-- [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
+---
 
-If you want to start working on your project right away, you might want to try the following commands:
+## 👥 Team Members
+BlockHire is developed by a dedicated team of three members:
+- **Ida Bagus Dharma Abimantra** – Leader, Backend Developer  
+- **Anak Agung Gede Putu Wiradarma** – Full-stack Developer  
+- **I Made Sutha Raditya** – UI/UX Designer  
 
-```bash
-cd BlockHire/
-dfx help
-dfx canister --help
+## 🔥 Features
+- **Smart Contract-Based Agreements** – Freelancers and companies have separate accounts integrated with **blockchain**, ensuring secure transactions.  
+- **AI-Powered Auto Filtering** – AI automatically matches freelancers with job posts based on their **skills and expertise**.  
+- **ICP-Based Payments** – Companies must **top up their balance** before posting jobs, guaranteeing **freelancers get paid** once projects are completed.  
+- **Job Posting with Smart Contracts** – Ensures **data accuracy** and **prevents fraud** in contracts.  
+
+## 🚀 Technology Stack
+- **Frontend:** React, Tailwind CSS, GSAP, Draggable React  
+- **Backend:** Motoko (Deployed on ICP)  
+- **Blockchain:** ICP (Internet Computer), Smart Contracts  
+
+## 🔧 Prerequisites
+Before setting up the project, ensure you have the following installed:
+- **Node.js** (v16+ recommended) [Get It From](https://nodejs.org/)  
+- **Dfinity SDK (dfx)** – To deploy on ICP [Installation Guide](https://internetcomputer.org/docs/current/developer-docs/getting-started/install)  
+- **Git** [Download](https://git-scm.com/downloads)  
+
+## 🛠 Installation
+Clone the repository and install dependencies:
+```sh
+# Clone the repo
+git clone https://github.com/AbiMantra/BlockHire.git
+cd BlockHire
+
+# Install dependencies
+npm install
+mops install
 ```
 
-## Running the project locally
+## 💻 Local Development
+To start the local development server:
+1. Clean dfx processes on system:
+   ```bash
+   dfx killall
+   ```
+   
+2. Deploy the ICP Ledger:
+   ```bash
+   npm run deploy-ledger
+   ```
 
-If you want to test your project locally, you can use the following commands:
+3. Deploy project canisters:
+   ```bash
+   dfx deploy
+   ```
 
-```bash
-# Starts the replica, running in the background
-dfx start --background
+Your application should now be running at `http://[your CANISTER_ID_BlockHire_FRONTEND].localhost:4943`.
+ 
+## 🔮 Conclusion & Future Plans
+BlockHire aims to **bridge blockchain technology and environmental consciousness** through an engaging AI-driven chatbot. Moving forward, we plan to:
+- **Freelancer Reputation System** AI-driven ratings and reviews to ensure high-quality freelancers.
+- **Premium AI Job Matching** More advanced AI algorithms to improve job matching accuracy.
+- *Video Call Integration**  Built-in **secure video calls** for real-time communication between freelancers and companies, ensuring **better collaboration** and **project discussions**.
+- **Subscription Plans** Offering premium features for companies and freelancers.
 
-# Deploys your canisters to the replica and generates your candid interface
-dfx deploy
-```
-
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
-
-If you have made changes to your backend canister, you can generate a new candid interface with
-
-```bash
-npm run generate
-```
-
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
-
-If you are making frontend changes, you can start a development server with
-
-```bash
-npm start
-```
-
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
-
-### Note on frontend environment variables
-
-If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
-
-- set`DFX_NETWORK` to `ic` if you are using Webpack
-- use your own preferred method to replace `process.env.DFX_NETWORK` in the autogenerated declarations
-  - Setting `canisters -> {asset_canister_id} -> declarations -> env_override to a string` in `dfx.json` will replace `process.env.DFX_NETWORK` with the string in the autogenerated declarations
-- Write your own `createActor` constructor
+💼 Join us in building a smarter and more secure freelance ecosystem with BlockHire! 🚀

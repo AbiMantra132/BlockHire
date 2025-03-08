@@ -6,6 +6,7 @@ interface SkillOptProps {
   skill?: string;
   onclick?: () => void;
   setSkills?: React.Dispatch<React.SetStateAction<string[]>>;
+  notClick?: boolean;
 }
 
 export default function SkillOpt({
@@ -14,6 +15,7 @@ export default function SkillOpt({
   skill,
   isEmpty = false,
   setSkills,
+  notClick,
 }: SkillOptProps) {
   const [newSkill, setNewSkill] = useState<string>("");
 
@@ -32,21 +34,23 @@ export default function SkillOpt({
           : "bg-transparent border-[#20202021]"
       }`}
     >
-      <div
-        className="flex justify-center items-center w-3 aspect-square relative"
-        onClick={onclick}
-      >
+      {!notClick && (
         <div
-          className={`w-full h-[2px] rounded-full ${
-            isActive ? "bg-[#2F89FC]" : "bg-black opacity-60"
-          }`}
-        ></div>
-        {!isActive && (
+          className="flex justify-center items-center w-3 aspect-square relative"
+          onClick={onclick}
+        >
           <div
-            className={`h-full w-[2px] rounded-full bg-black opacity-60 absolute`}
+            className={`w-full h-[2px] rounded-full ${
+              isActive ? "bg-[#2F89FC]" : "bg-black opacity-60"
+            }`}
           ></div>
-        )}
-      </div>
+          {!isActive && (
+            <div
+              className={`h-full w-[2px] rounded-full bg-black opacity-60 absolute`}
+            ></div>
+          )}
+        </div>
+      )}
       {isEmpty ? (
         <input
           type="text"

@@ -188,18 +188,24 @@ actor class BlockHire() = this {
     skills : [Text],
     budget : Text,
     duration : Text,
+    scope : Text,
+    freelancer_amount : Text,
+    level : Text,
     companyId : Principal,
     createdAt : Text,
-    freeLancerNeeded : Nat,
   ) : async Result.Result<ProjectTypes.Project, Text> {
     let parsedBudget = switch (Nat.fromText(budget)) {
       case (?num) num;
       case null return #err("Invalid budget format. Please provide a valid number.");
     };
+    let parsedFreelancerAmount = switch (Nat.fromText(freelancer_amount)) {
+      case (?num) num;
+      case null return #err("Invalid freelancer amount format. Please provide a valid number.");
+    };
 
     let currentId = nextProjectId;
     nextProjectId += 1;
-
+    
     let newProject = await ProjectService.handlecreateProject(
       title,
       description,
@@ -239,7 +245,7 @@ actor class BlockHire() = this {
   };
 
   public shared (msg) func approveFreelancer(projectId : Text, freelancerId : Principal) : async Result.Result<(), Text> {
-    await ProjectService.handleapproveFreelancer(projectId, freelancerId, projects, msg.caller);
+   await ProjectService.handleapproveFreelancer(projectId, freelancerId, projects, msg.caller);
   };
 
   public shared (msg) func submitProject(projectId : Text, submissionLink : Text, submissionImage : Text) : async Result.Result<(), Text> {

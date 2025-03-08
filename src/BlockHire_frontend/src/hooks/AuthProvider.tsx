@@ -18,8 +18,8 @@ interface AuthContextProps {
   login: () => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (updateUser: any) => void;
-  getFreelancer: () => void;
-  getCompany: () => void;
+  updateFreelancer: (updateFreelancer: any) => void;
+  updateCompany: (updateCompany: any) => void;
   user: any;
   freelancer: any;
   company: any;
@@ -35,8 +35,8 @@ const AuthContext = createContext<AuthContextProps>({
   login: async () => {},
   logout: async () => {},
   updateUser: async () => {},
-  getFreelancer: async () => {},
-  getCompany: async () => {},
+  updateFreelancer: async () => {},
+  updateCompany: async () => {},
   user: null,
   freelancer: null,
   company: null,
@@ -97,13 +97,18 @@ export const useAuthClient = (options = defaultOptions) => {
             if ("ok" in res) {
               setFreelancer(res.ok);
             }
+          } else if (result.ok.role == "Company") {
+            const res = await actor.getCompany(principal);
+            if ("ok" in res) {
+              setCompany(res.ok);
+            }
           }
         }
 
         setCallFunction(actor);
       } catch (error) {
-        console.error("Error during initAuth:", error);
         logout();
+        console.error("Error during initAuth:", error);
       } finally {
         setLoading(false);
       }
@@ -142,8 +147,18 @@ export const useAuthClient = (options = defaultOptions) => {
 
           const result = await actor.createUser(accountIdentifier.toHex());
           if ("ok" in result) {
+            if (result.ok.role == "Freelancer") {
+              const res = await actor.getFreelancer(principal);
+              if ("ok" in res) {
+                setFreelancer(res.ok);
+              }
+            } else if (result.ok.role == "Company") {
+              const res = await actor.getCompany(principal);
+              if ("ok" in res) {
+                setCompany(res.ok);
+              }
+            }
             setUser(result.ok);
-            console.log(result.ok);
           } else {
             console.log("User are not verifed");
             logout();
@@ -166,25 +181,20 @@ export const useAuthClient = (options = defaultOptions) => {
       setPrincipal(null);
       setCallFunction(null);
       setUser(null);
+      setFreelancer(null);
+      setCompany(null);
     }
-    setLoading(true);
+    setLoading(false);
   }
 
   const updateUser = (updateUser: any) => {
     setUser(updateUser);
   };
-
-  const getFreelancer = async () => {
-    const res = await callFunction.getFreelancer(principal);
-    if ("ok" in res) {
-      setFreelancer(res.ok);
-    }
+  const updateFreelancer = (updateFreelancer: any) => {
+    setFreelancer(updateFreelancer);
   };
-  const getCompany = async () => {
-    const res = await callFunction.getCompany(principal);
-    if ("ok" in res) {
-      setCompany(res.ok);
-    }
+  const updateCompany = (updateCompany: any) => {
+    setCompany(updateCompany);
   };
 
   return {
@@ -200,8 +210,8 @@ export const useAuthClient = (options = defaultOptions) => {
     company,
     loading,
     updateUser,
-    getFreelancer,
-    getCompany,
+    updateFreelancer,
+    updateCompany,
   };
 };
 

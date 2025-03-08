@@ -29,7 +29,7 @@ export default function CreateFreelancer({
   data,
   setData,
 }: CreateFreelancerProps) {
-  const { callFunction, principal, user, getFreelancer, updateUser } =
+  const { callFunction, principal, user, updateFreelancer, updateUser } =
     useAuth();
   const [isNext, setIsNext] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
@@ -61,10 +61,10 @@ export default function CreateFreelancer({
         date
       );
       if ("ok" in res) {
-        getFreelancer();
+        updateFreelancer(res.ok);
         updateUser({
           id: user.id,
-          username: res.ok.name,
+          username: res.ok.username,
           walletAddress: user.walletAddress,
           profile: res.ok.profile,
           role: "Freelancer",
