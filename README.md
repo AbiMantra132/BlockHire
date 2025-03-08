@@ -7,7 +7,7 @@ BlockHire is a blockchain-powered job marketplace connecting **companies** with 
 </p>
 
 **Video Demo**: [Video](https://youtu.be/GSCzvJTQ6Hg?si=D_ssT6ntcn4UJ_EN)  
-**Documents Apps**: [Documents](https://drive.google.com/drive/folders/1FJM-WmmKf0G8A7nIps7uVL7myaYXoO6C?usp=sharing)
+**Documents Apps**: [Documents](https://drive.google.com/drive/u/2/folders/1bE4IAs7unsBioiX3FViq5FeEeAY9cm2x)
 
 ---
 
