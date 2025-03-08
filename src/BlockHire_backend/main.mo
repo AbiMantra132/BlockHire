@@ -229,6 +229,18 @@ actor class BlockHire() = this {
       companyApproved = false;
     };
 
+    let idStatusFreelancer = generateRandomID();
+
+      let freelancerStatusObject : ProjectTypes.FreeLancerStatus = 
+        {
+          freelancerStatusId = idStatusFreelancer;
+          freelancerId = Principal.fromText("aaaaa-aa");
+          status = "pending";
+          projectId = Nat.toText(currentId);
+        };
+
+        freelancerStatus.put(idStatusFreelancer, freelancerStatusObject);
+
     projects.put(Nat.toText(currentId), newProject);
 
     #ok(newProject);

@@ -14,7 +14,7 @@ export default function ProjectAction() {
     const fetch = async () => {
       if (data && data.companyId) {
         const res = await callFunction.getCompany(data.companyId);
-        console.log(res);
+        // console.log(res);
         if ("ok" in res) {
           setDataCompany(res.ok);
         }
